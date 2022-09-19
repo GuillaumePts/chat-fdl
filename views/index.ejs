@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,8 +8,39 @@
     <link rel="stylesheet" href="style.css">
     <title>conv</title>
 </head>
+
 <body>
-    <h1>yo</h1>
-    <h2>yo</h2>
+
+
+    <div id="liste-users">
+        <h1>liste user</h1>
+    </div>
+    <div id="content">
+        <div id="header">
+            <p id="name">User</p>
+        </div>
+        <div id="main">
+        
+            <div class="moi message">
+               coucou
+            </div>
+            <div class="autre message">
+                yo
+            </div>
+        </div>
+   
+        <div id="footer">
+            <form method="post" id="chatForm">
+                <input type="text" id="msgInput" autofocus onkeypress="writting()" onblur="notWritting()">
+                <input type="submit" value="Envoyer" id="btnsend">
+            </form>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script src="app.js"></script>
+
 </body>
+
 </html>
