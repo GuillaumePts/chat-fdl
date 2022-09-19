@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>conv</title>
+    <title></title>
 </head>
 
 <body>
@@ -14,19 +14,17 @@
 
     <div id="liste-users">
         <h1>liste user</h1>
+        <% users.forEach(user => { %>
+            <input type="button" onclick="_join()" value="<%= user.pseudo %>">
+            <% });%>
     </div>
     <div id="content">
+       
         <div id="header">
-            <p id="name">User</p>
+            <p id="name"></p>
         </div>
         <div id="main">
         
-            <div class="moi message">
-               coucou
-            </div>
-            <div class="autre message">
-                yo
-            </div>
         </div>
    
         <div id="footer">

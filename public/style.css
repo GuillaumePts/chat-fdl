@@ -25,6 +25,10 @@ body{
     width: 200px;
     background-color: var(--color2-);
     border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
 #content {
     height: 700px;
