@@ -4,7 +4,7 @@
 
 ## Techno
 
-Les technologies utilisé :
+Les technologies utilisées :
 
 * Node.js
 * Express.js
