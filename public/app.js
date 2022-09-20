@@ -7,14 +7,19 @@ if (pseudo === '') {
 
 }
 
+
+
 console.log(pseudo);
 
 socket.emit('pseudo', pseudo);
 document.title = pseudo
 
+socket.on('namespace', (data) =>{
+    document.querySelector('#name').textContent =data.name
+})
 
 function _join(nom){
     console.log(nom, pseudo);
-    document.querySelector('#name').textContent = nom
+    // document.querySelector('#name').textContent = nom 
     socket.emit('test', nom)
 }

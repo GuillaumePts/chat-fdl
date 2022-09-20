@@ -86,6 +86,7 @@ io.on('connection', (socket) => {
         }, (err, user) => {
             if (user) {
                 socket.pseudo = pseudo;
+               
             } else {
                 let user = new User();
                 user.pseudo = pseudo;
@@ -99,11 +100,18 @@ io.on('connection', (socket) => {
         })
     })
 
+    
+
     socket.on('test', (nom) => {
         console.log('tu as cliqué sur ' +  nom + ' et tu es ' + socket.pseudo );
         _join(nom, socket.pseudo)
         
+        
     })
+
+    
+
+   
 
     socket.on('disconnect', () => {
         let index = connectedUsers.indexOf(socket);
@@ -112,16 +120,23 @@ io.on('connection', (socket) => {
         }
     })
 
-})
-
-//  FUNCTION 
-
+    
 function creatRoom (lui, toi){
     let room = new Room()
     room.name = lui+'/'+toi;
     room.user1 = toi;
     room.user2 = lui;
     room.save();
+    _joinRoom(room)
+    
+}
+
+function _joinRoom(room){
+    socket.leaveAll();
+    socket.join(room)
+    socket.room = room 
+   socket.emit('namespace', room )
+    
 }
 
  function _join(lui, toi){
@@ -129,12 +144,17 @@ function creatRoom (lui, toi){
     Room.findOne({ name : lui+'/'+toi }, (err, room) =>{
         if (room){
             console.log('existe');
+          
+            _joinRoom(room)
+
         }else{
             Room.findOne({ name : toi+'/'+lui}, (err, room) =>{
                 if (room) {
                     console.log('existe sous untre forme');
+                    _joinRoom(room)
                 }else{
                     creatRoom(lui, toi)
+                  
                     console.log('va voir bdd');
                 }
             })
@@ -142,6 +162,12 @@ function creatRoom (lui, toi){
     })
 
  }
+
+})
+
+//  FUNCTION 
+
+
 
 
 
