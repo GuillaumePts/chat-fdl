@@ -12,10 +12,11 @@
 <body>
 
 
+
     <div id="liste-users">
         <h1>liste user</h1>
         <% users.forEach(user => { %>
-            <input type="button" onclick="_join()" value="<%= user.pseudo %>">
+            <input type="button" onclick="_join('<%= user.pseudo %>')" id="<%= user.pseudo %>" value="<%= user.pseudo %>">
             <% });%>
     </div>
     <div id="content">

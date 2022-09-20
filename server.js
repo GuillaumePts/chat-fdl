@@ -32,23 +32,43 @@ app.use(express.static(__dirname + '/public'));
 
 
 app.get('/', function (req, res) {
+    User.find((err, users) => {
+        if (users) {
+            Room.find((err, channels) => {
+                if (channels) {
+                    res.render('index.ejs', {
+                        users: users,
+                        channels: channels
+                    });
+                } else {
 
+                    res.render('index.ejs', {
+                        users: users
+                    });
+                }
+            });
+        } else {
+            Room.find((err, channels) => {
+                if (channels) {
+                    res.render('index.ejs', {
+                        channels: channels
+                    });
+                } else {
 
-    User.find((err, users) =>{
-        
-        res.render('index.ejs',{
-            users:users,
-        });
+                    res.render('index.ejs');
+                }
+            });
+        }
     });
-
-
-
 });
 
 app.use(function (req, res, next) {
     res.setHeader('Content-type', 'text/html');
     res.status(404).send('Page introuvable !');
 });
+
+
+
 
 // SOCKET
 
@@ -75,8 +95,14 @@ io.on('connection', (socket) => {
             }
 
             connectedUsers.push(socket);
-            console.log(connectedUsers.value);
+            
         })
+    })
+
+    socket.on('test', (nom) => {
+        console.log('tu as cliqué sur ' +  nom + ' et tu es ' + socket.pseudo );
+        _join(nom, socket.pseudo)
+        
     })
 
     socket.on('disconnect', () => {
@@ -87,5 +113,36 @@ io.on('connection', (socket) => {
     })
 
 })
+
+//  FUNCTION 
+
+function creatRoom (lui, toi){
+    let room = new Room()
+    room.name = lui+'/'+toi;
+    room.user1 = toi;
+    room.user2 = lui;
+    room.save();
+}
+
+ function _join(lui, toi){
+
+    Room.findOne({ name : lui+'/'+toi }, (err, room) =>{
+        if (room){
+            console.log('existe');
+        }else{
+            Room.findOne({ name : toi+'/'+lui}, (err, room) =>{
+                if (room) {
+                    console.log('existe sous untre forme');
+                }else{
+                    creatRoom(lui, toi)
+                    console.log('va voir bdd');
+                }
+            })
+        }
+    })
+
+ }
+
+
 
 server.listen(9999, () => console.log('server ok ! : http://localhost:9999'));
