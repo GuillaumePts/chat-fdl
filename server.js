@@ -34,11 +34,11 @@ app.use(express.static(__dirname + '/public'));
 app.get('/', function (req, res) {
     User.find((err, users) => {
         if (users) {
-            Room.find((err, channels) => {
-                if (channels) {
+            Room.find((err, room) => {
+                if (room) {
                     res.render('index.ejs', {
                         users: users,
-                        channels: channels
+                        rooms: room
                     });
                 } else {
 
@@ -48,10 +48,10 @@ app.get('/', function (req, res) {
                 }
             });
         } else {
-            Room.find((err, channels) => {
-                if (channels) {
+            Room.find((err, room) => {
+                if (room) {
                     res.render('index.ejs', {
-                        channels: channels
+                        rooms: room
                     });
                 } else {
 
@@ -75,7 +75,7 @@ app.use(function (req, res, next) {
 let io = require('socket.io')(server);
 
 let connectedUsers = []
-let receiver = ''
+
 
 io.on('connection', (socket) => {
 
@@ -101,28 +101,38 @@ io.on('connection', (socket) => {
         })
     })
 
+    let receiver = ''
 
 
     socket.on('select', (nom) => {
         console.log('tu as cliqué sur ' + nom + ' et tu es ' + socket.pseudo);
-        _join(nom, socket.pseudo)
-        socket.receiver = nom
-        receiver = socket.receiver
-
+        rechercheRoom(nom, socket.pseudo)
+        socket.emit('namespace', nom)
+        receiver = nom
+       
     })
 
 
 
-    socket.on('newMessage', (message, lereceiver) => {
+    socket.on('message', (message, lereceiver) => {
+      
         lereceiver = receiver
+        console.log(receiver);
         let chat = new Chat();
-        chat._id_room = socket.room;
+        chat.id_room = socket.room.name;
         chat.content = message;
         chat.sender = socket.pseudo;
         chat.receiver = lereceiver;
         chat.save();
+       console.log('3 ' +socket.room.name);
+     
+            socket.broadcast.to(socket.room.name).emit('messageView', {
+                message: message,
+                pseudo: socket.pseudo
+            })
+  
 
-        console.log(lereceiver+' : '+ message);
+      
     })
 
 
@@ -142,26 +152,42 @@ io.on('connection', (socket) => {
         room.user1 = toi;
         room.user2 = lui;
         room.save();
-        _joinRoom(room)
-
+        socket.room= lui + '/' + toi;
+        _joinRoom(socket.room)
+console.log('1 : '+ socket.room);
     }
 
     function _joinRoom(room) {
         socket.leaveAll();
-        socket.join(room)
-        socket.room = room
-        socket.emit('namespace', receiver)
+        socket.join(room.name)
+        
+            console.log(socket.pseudo +' à rejoint la room '+ room.name);
+        
+           
+        
+       
 
 
     }
 
-    function _join(lui, toi) {
+    function rechercheRoom(lui, toi) {
 
         Room.findOne({
             name: lui + '/' + toi
         }, (err, room) => {
             if (room) {
                 console.log('existe');
+              
+socket.room = room
+                // Chat.find({
+                //     _id_room: room.name 
+                // }, (err, messages) =>{
+                //     if(!messages){
+                //         console.log('pas de message');
+                //     }else{
+                //         socket.emit('oldMessages', messages, socket.pseudo);
+                //     }
+                // })
 
                 _joinRoom(room)
 
@@ -171,6 +197,8 @@ io.on('connection', (socket) => {
                 }, (err, room) => {
                     if (room) {
                         console.log('existe sous une autre forme');
+                     
+                        socket.room = room
                         _joinRoom(room)
                     } else {
                         creatRoom(lui, toi)
