@@ -75,6 +75,7 @@ app.use(function (req, res, next) {
 let io = require('socket.io')(server);
 
 let connectedUsers = []
+let receiver = ''
 
 io.on('connection', (socket) => {
 
@@ -86,7 +87,7 @@ io.on('connection', (socket) => {
         }, (err, user) => {
             if (user) {
                 socket.pseudo = pseudo;
-               
+
             } else {
                 let user = new User();
                 user.pseudo = pseudo;
@@ -96,22 +97,36 @@ io.on('connection', (socket) => {
             }
 
             connectedUsers.push(socket);
-            
+
         })
     })
 
-    
 
-    socket.on('test', (nom) => {
-        console.log('tu as cliqué sur ' +  nom + ' et tu es ' + socket.pseudo );
+
+    socket.on('select', (nom) => {
+        console.log('tu as cliqué sur ' + nom + ' et tu es ' + socket.pseudo);
         _join(nom, socket.pseudo)
-        
-        
+        socket.receiver = nom
+        receiver = socket.receiver
+
     })
 
-    
 
-   
+
+    socket.on('newMessage', (message, lereceiver) => {
+        lereceiver = receiver
+        let chat = new Chat();
+        chat._id_room = socket.room;
+        chat.content = message;
+        chat.sender = socket.pseudo;
+        chat.receiver = lereceiver;
+        chat.save();
+
+        console.log(lereceiver+' : '+ message);
+    })
+
+
+
 
     socket.on('disconnect', () => {
         let index = connectedUsers.indexOf(socket);
@@ -120,48 +135,53 @@ io.on('connection', (socket) => {
         }
     })
 
-    
-function creatRoom (lui, toi){
-    let room = new Room()
-    room.name = lui+'/'+toi;
-    room.user1 = toi;
-    room.user2 = lui;
-    room.save();
-    _joinRoom(room)
-    
-}
 
-function _joinRoom(room){
-    socket.leaveAll();
-    socket.join(room)
-    socket.room = room 
-   socket.emit('namespace', room )
-    
-}
+    function creatRoom(lui, toi) {
+        let room = new Room()
+        room.name = lui + '/' + toi;
+        room.user1 = toi;
+        room.user2 = lui;
+        room.save();
+        _joinRoom(room)
 
- function _join(lui, toi){
+    }
 
-    Room.findOne({ name : lui+'/'+toi }, (err, room) =>{
-        if (room){
-            console.log('existe');
-          
-            _joinRoom(room)
+    function _joinRoom(room) {
+        socket.leaveAll();
+        socket.join(room)
+        socket.room = room
+        socket.emit('namespace', receiver)
 
-        }else{
-            Room.findOne({ name : toi+'/'+lui}, (err, room) =>{
-                if (room) {
-                    console.log('existe sous untre forme');
-                    _joinRoom(room)
-                }else{
-                    creatRoom(lui, toi)
-                  
-                    console.log('va voir bdd');
-                }
-            })
-        }
-    })
 
- }
+    }
+
+    function _join(lui, toi) {
+
+        Room.findOne({
+            name: lui + '/' + toi
+        }, (err, room) => {
+            if (room) {
+                console.log('existe');
+
+                _joinRoom(room)
+
+            } else {
+                Room.findOne({
+                    name: toi + '/' + lui
+                }, (err, room) => {
+                    if (room) {
+                        console.log('existe sous une autre forme');
+                        _joinRoom(room)
+                    } else {
+                        creatRoom(lui, toi)
+
+                        console.log('va voir bdd');
+                    }
+                })
+            }
+        })
+
+    }
 
 })
 
