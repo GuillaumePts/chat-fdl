@@ -87,7 +87,7 @@ io.on('connection', (socket) => {
         }, (err, user) => {
             if (user) {
                 socket.pseudo = pseudo;
-
+              console.log(socket.id);
             } else {
                 let user = new User();
                 user.pseudo = pseudo;
@@ -126,8 +126,10 @@ io.on('connection', (socket) => {
         chat.receiver = lereceiver;
         chat.save();
 
+       
+        console.log(socket.receiver);
 
-        socket.broadcast.to(socket.room.name).emit('messageView', {
+       socket.broadcast.to(socket.room.name).emit('messageView', {
             message: message,
             pseudo: socket.pseudo
         })
@@ -159,7 +161,7 @@ io.on('connection', (socket) => {
     }
 
     function _joinRoom(room) {
-        socket.leaveAll();
+        // socket.leaveAll();
         socket.join(room.name)
 
         console.log(socket.pseudo + ' à rejoint la room ' + room.name);

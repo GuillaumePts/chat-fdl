@@ -34,24 +34,24 @@ document.querySelector('#chatForm').addEventListener('submit', (e) => {
 
 
 socket.on('namespace', (data) =>{
-    console.log(data);
+   
     document.querySelector('#name').textContent =data
    
 })
 
 socket.on('messageView', (data) =>{
-    console.log('test : ' + data);
+   
     createElementFunction('autre', data)
 })
 
 socket.on('oldMessagesMe', (messageSender , messageContent) => {
   createElementFunction('oldMessagesMe',messageSender, messageContent)
-// console.log(messageSender , messageContent)
+
 })
 
 socket.on('oldMessages', (messageSender , messageContent) => {
      createElementFunction('oldMessages',messageSender, messageContent)
-    // console.log(messageSender , messageContent)
+  
   })
 
 
