@@ -44,18 +44,20 @@ socket.on('messageView', (data) =>{
     createElementFunction('autre', data)
 })
 
-socket.on('oldMessages', (messages) => {
-    messages.forEach(message => {
-        if (message.sender === pseudo) {
-            createElementFunction('oldMessagesMe', message)
-        } else {
-            createElementFunction('oldMessages', message)
-        }
-    });
+socket.on('oldMessagesMe', (messageSender , messageContent) => {
+  createElementFunction('oldMessagesMe',messageSender, messageContent)
+// console.log(messageSender , messageContent)
 })
 
+socket.on('oldMessages', (messageSender , messageContent) => {
+     createElementFunction('oldMessages',messageSender, messageContent)
+    // console.log(messageSender , messageContent)
+  })
 
-function createElementFunction(element, content) {
+
+
+
+function createElementFunction(element, content,content2) {
     let newElement = document.createElement('div');
 
     switch (element) {
@@ -74,14 +76,16 @@ function createElementFunction(element, content) {
         
         case 'oldMessages':
             newElement.classList.add('autre', 'message');
-            newElement.textContent = content.sender + ' : ' + content.content;
-            document.getElementById('msgContainer').appendChild(newElement);
+            newElement.textContent = content + ' : ' + content2;
+            document.getElementById('main').appendChild(newElement);
+            console.log('1 : ' + element, content, content2);
             break;
 
         case 'oldMessagesMe':
             newElement.classList.add('moi', 'message');
-            newElement.textContent = content.sender + ' : ' + content.content;
-            document.getElementById('msgContainer').appendChild(newElement);
+            newElement.textContent = content + ' : ' + content2;
+            document.getElementById('main').appendChild(newElement);
+            console.log('2 : '+element, content, content2);
             break;
 
 

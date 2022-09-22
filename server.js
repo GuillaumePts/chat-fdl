@@ -109,30 +109,31 @@ io.on('connection', (socket) => {
         rechercheRoom(nom, socket.pseudo)
         socket.emit('namespace', nom)
         receiver = nom
-       
+
     })
 
 
 
     socket.on('message', (message, lereceiver) => {
-      
+
+
         lereceiver = receiver
-        console.log(receiver);
+
         let chat = new Chat();
         chat.id_room = socket.room.name;
         chat.content = message;
         chat.sender = socket.pseudo;
         chat.receiver = lereceiver;
         chat.save();
-       console.log('3 ' +socket.room.name);
-     
-            socket.broadcast.to(socket.room.name).emit('messageView', {
-                message: message,
-                pseudo: socket.pseudo
-            })
-  
 
-      
+
+        socket.broadcast.to(socket.room.name).emit('messageView', {
+            message: message,
+            pseudo: socket.pseudo
+        })
+
+
+
     })
 
 
@@ -152,20 +153,41 @@ io.on('connection', (socket) => {
         room.user1 = toi;
         room.user2 = lui;
         room.save();
-        socket.room= lui + '/' + toi;
+        socket.room = lui + '/' + toi;
         _joinRoom(socket.room)
-console.log('1 : '+ socket.room);
+        console.log('1 : ' + socket.room);
     }
 
     function _joinRoom(room) {
         socket.leaveAll();
         socket.join(room.name)
-        
-            console.log(socket.pseudo +' à rejoint la room '+ room.name);
-        
-           
-        
-       
+
+        console.log(socket.pseudo + ' à rejoint la room ' + room.name);
+
+        Chat.find({
+            id_room: room.name
+        }, (err, messages) => {
+
+            if (messages === null) {
+                console.log('pas de message');
+            } else {
+                messages.forEach(message => {
+
+                    if (message.sender === socket.pseudo) {
+                        socket.emit('oldMessagesMe', message.sender, message.content)
+                        console.log('tu avais envoyé '+message.content +' à ' + message.receiver);
+                    } else {
+                        socket.emit('oldMessages', message.sender, message.content)
+                        console.log('il t\'avait envoyé ' +message.content +' tu es ' + message.receiver);
+                    }
+
+                });
+            }
+
+
+        })
+
+
 
 
     }
@@ -177,17 +199,8 @@ console.log('1 : '+ socket.room);
         }, (err, room) => {
             if (room) {
                 console.log('existe');
-              
-socket.room = room
-                // Chat.find({
-                //     _id_room: room.name 
-                // }, (err, messages) =>{
-                //     if(!messages){
-                //         console.log('pas de message');
-                //     }else{
-                //         socket.emit('oldMessages', messages, socket.pseudo);
-                //     }
-                // })
+
+                socket.room = room
 
                 _joinRoom(room)
 
@@ -197,7 +210,7 @@ socket.room = room
                 }, (err, room) => {
                     if (room) {
                         console.log('existe sous une autre forme');
-                     
+
                         socket.room = room
                         _joinRoom(room)
                     } else {

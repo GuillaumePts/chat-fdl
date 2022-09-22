@@ -1,5 +1,4 @@
-*{box-sizing: border-box;margin: 0;padding: 0; font-family: monospace; text-overflow: ellipsis;
-    word-wrap: break-word;}
+*{box-sizing: border-box;margin: 0;padding: 0; font-family: monospace;}
 
 :root{
 --color1-: rgb(61, 94, 254);
