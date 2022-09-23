@@ -21,9 +21,9 @@ document.querySelector('#chatForm').addEventListener('submit', (e) => {
     const textInput = document.querySelector('#msgInput').value;
     document.querySelector('#msgInput').value = '';
 
-    
+
     if (textInput.length > 0) {
-       
+
         socket.emit('message', textInput);
         createElementFunction('moi', textInput)
     } else {
@@ -33,73 +33,86 @@ document.querySelector('#chatForm').addEventListener('submit', (e) => {
 })
 
 
-socket.on('namespace', (data) =>{
-   
-    document.querySelector('#name').textContent =data
-   
+socket.on('namespace', (data) => {
+
+    document.querySelector('#name').textContent = data
+
 })
 
-socket.on('messageView', (data) =>{
-   
+socket.on('messageView', (data) => {
+
     createElementFunction('autre', data)
 })
 
-socket.on('oldMessagesMe', (messageSender , messageContent) => {
-  createElementFunction('oldMessagesMe',messageSender, messageContent)
+socket.on('oldMessagesMe', (messageSender, messageContent) => {
+    createElementFunction('oldMessagesMe', messageSender, messageContent)
 
 })
 
-socket.on('oldMessages', (messageSender , messageContent) => {
-     createElementFunction('oldMessages',messageSender, messageContent)
-  
-  })
+socket.on('oldMessages', (messageSender, messageContent) => {
+    createElementFunction('oldMessages', messageSender, messageContent)
+
+})
 
 
 
 
-function createElementFunction(element, content,content2) {
+function createElementFunction(element, content, content2) {
     let newElement = document.createElement('div');
+    let messagemoi = document.createElement('p');
 
     switch (element) {
-        case 'moi' : 
-        newElement.classList.add(element, 'message');
-        newElement.textContent = pseudo + ' : ' + content;
-        document.querySelector('#main').appendChild(newElement);
-        break;
-
-        case 'autre' :
+        case 'moi':
             newElement.classList.add(element, 'message');
-        newElement.textContent = content.pseudo + ' : ' + content.message;
-        document.querySelector('#main').appendChild(newElement);
-        break;
+            document.querySelector('#msgcontent').appendChild(newElement);
+            messagemoi.classList.add('messagemoi');
+            messagemoi.textContent = pseudo + ' : ' + content;
+            newElement.appendChild(messagemoi)
 
-        
+            break;
+
+        case 'autre':
+            newElement.classList.add(element, 'message');
+
+            document.querySelector('#msgcontent').appendChild(newElement);
+
+            messagemoi.classList.add('messageautre');
+            messagemoi.textContent = content.pseudo + ' : ' + content.message;
+            newElement.appendChild(messagemoi)
+            break;
+
+
         case 'oldMessages':
             newElement.classList.add('autre', 'message');
-            newElement.textContent = content + ' : ' + content2;
-            document.getElementById('main').appendChild(newElement);
-            console.log('1 : ' + element, content, content2);
+
+            document.getElementById('msgcontent').appendChild(newElement);
+            messagemoi.classList.add('messageautre');
+            messagemoi.textContent = content + ' : ' + content2;
+            newElement.appendChild(messagemoi)
+
             break;
 
         case 'oldMessagesMe':
             newElement.classList.add('moi', 'message');
-            newElement.textContent = content + ' : ' + content2;
-            document.getElementById('main').appendChild(newElement);
-            console.log('2 : '+element, content, content2);
+
+            document.getElementById('msgcontent').appendChild(newElement);
+            messagemoi.classList.add('messagemoi');
+            messagemoi.textContent = content + ' : ' + content2;
+            newElement.appendChild(messagemoi)
             break;
 
 
     }
-   
+
 
 
 }
 
-function _join(nom){
-   
+function _join(nom) {
+
     // document.querySelector('#name').textContent = nom 
-    document.querySelector('#main').innerHTML = '';
-   
+    document.querySelector('#msgcontent').innerHTML = '';
+
     socket.emit('select', nom)
 }
 

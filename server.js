@@ -87,7 +87,7 @@ io.on('connection', (socket) => {
         }, (err, user) => {
             if (user) {
                 socket.pseudo = pseudo;
-              console.log(socket.id);
+
             } else {
                 let user = new User();
                 user.pseudo = pseudo;
@@ -105,7 +105,7 @@ io.on('connection', (socket) => {
 
 
     socket.on('select', (nom) => {
-        console.log('tu as cliqué sur ' + nom + ' et tu es ' + socket.pseudo);
+
         rechercheRoom(nom, socket.pseudo)
         socket.emit('namespace', nom)
         receiver = nom
@@ -126,10 +126,10 @@ io.on('connection', (socket) => {
         chat.receiver = lereceiver;
         chat.save();
 
-       
-        console.log(socket.receiver);
 
-       socket.broadcast.to(socket.room.name).emit('messageView', {
+
+
+        socket.broadcast.to(socket.room.name).emit('messageView', {
             message: message,
             pseudo: socket.pseudo
         })
@@ -148,6 +148,8 @@ io.on('connection', (socket) => {
         }
     })
 
+    //  FUNCTION 
+
 
     function creatRoom(lui, toi) {
         let room = new Room()
@@ -157,14 +159,14 @@ io.on('connection', (socket) => {
         room.save();
         socket.room = lui + '/' + toi;
         _joinRoom(socket.room)
-        console.log('1 : ' + socket.room);
+
     }
 
     function _joinRoom(room) {
         // socket.leaveAll();
         socket.join(room.name)
 
-        console.log(socket.pseudo + ' à rejoint la room ' + room.name);
+
 
         Chat.find({
             id_room: room.name
@@ -177,10 +179,10 @@ io.on('connection', (socket) => {
 
                     if (message.sender === socket.pseudo) {
                         socket.emit('oldMessagesMe', message.sender, message.content)
-                        console.log('tu avais envoyé '+message.content +' à ' + message.receiver);
+
                     } else {
                         socket.emit('oldMessages', message.sender, message.content)
-                        console.log('il t\'avait envoyé ' +message.content +' tu es ' + message.receiver);
+
                     }
 
                 });
@@ -200,7 +202,7 @@ io.on('connection', (socket) => {
             name: lui + '/' + toi
         }, (err, room) => {
             if (room) {
-                console.log('existe');
+
 
                 socket.room = room
 
@@ -211,14 +213,14 @@ io.on('connection', (socket) => {
                     name: toi + '/' + lui
                 }, (err, room) => {
                     if (room) {
-                        console.log('existe sous une autre forme');
+
 
                         socket.room = room
                         _joinRoom(room)
                     } else {
                         creatRoom(lui, toi)
 
-                        console.log('va voir bdd');
+
                     }
                 })
             }
@@ -228,7 +230,7 @@ io.on('connection', (socket) => {
 
 })
 
-//  FUNCTION 
+
 
 
 
