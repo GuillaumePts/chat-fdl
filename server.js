@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose')
 const server = require('http').createServer(app);
+const fs = require('fs')
+
 
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -78,7 +80,7 @@ let connectedUsers = []
 
 
 io.on('connection', (socket) => {
-
+ 
     socket.on('pseudo', (pseudo) => {
 
 
@@ -100,6 +102,8 @@ io.on('connection', (socket) => {
 
         })
     })
+
+
 
     let receiver = ''
 
@@ -138,6 +142,7 @@ io.on('connection', (socket) => {
 
     })
 
+   
 
 
 

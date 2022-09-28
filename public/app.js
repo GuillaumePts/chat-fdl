@@ -21,17 +21,39 @@ document.querySelector('#chatForm').addEventListener('submit', (e) => {
     const textInput = document.querySelector('#msgInput').value;
     document.querySelector('#msgInput').value = '';
 
+    // const imgInput = document.querySelector('#imgInput');
+     
+    
 
     if (textInput.length > 0) {
 
         socket.emit('message', textInput);
         createElementFunction('moi', textInput)
+     
     } else {
         return false;
     }
 
+    // if (imgInput ) {
+
+    //     socket.emit('image', imgInput);
+    //     createImage(imgInput.files[0])
+    //     console.log(imgInput.files[0].name);
+    // } else {
+    //     return false;
+    // }
+
+    
+        
+      
 })
 
+
+function createImage(path){
+let img = document.createElement('img')
+img.src = path;
+document.querySelector('#msgcontent').appendChild(img)
+}
 
 socket.on('namespace', (data) => {
 
