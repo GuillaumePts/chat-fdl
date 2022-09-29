@@ -32,7 +32,7 @@
         <div id="footer">
             <form method="post" id="chatForm">
                  <input type="text" id="msgInput" autofocus  /> 
-                 <input type="file" onchange="handleFiles(files)" id="upload" multiple name="file" />
+                 <input type="file" onchange="handleFiles(files)"  id="upload" multiple name="file" />
                  
               
               
@@ -44,34 +44,7 @@
 
     <script src="app.js"></script>
 
-    <script>
-         function handleFiles(files) {
-   var imageType = /^image\//;
-   for (var i = 0; i < files.length; i++) {
-   var file = files[i];
-   if (!imageType.test(file.type)) {
-     alert("veuillez sélectionner une image");
-   }else{
-    //  if(i == 0){
-    //    preview.innerHTML = '';
-    //  }
-     var img = document.createElement("img");
-   
-     img.file = file;
-     document.querySelector("#msgcontent").appendChild(img); 
-     var reader = new FileReader();
-     reader.onload = ( function(aImg) { 
-     return function(e) { 
-     aImg.src = e.target.result; 
-   }; 
-  })(img);
-
- reader.readAsDataURL(file);
- }
- 
- }
-}
-    </script>
+    
 
 </body>
 

@@ -49,11 +49,9 @@ document.querySelector('#chatForm').addEventListener('submit', (e) => {
 })
 
 
-function createImage(path){
-let img = document.createElement('img')
-img.src = path;
-document.querySelector('#msgcontent').appendChild(img)
-}
+
+
+
 
 socket.on('namespace', (data) => {
 
@@ -75,6 +73,25 @@ socket.on('oldMessages', (messageSender, messageContent) => {
     createElementFunction('oldMessages', messageSender, messageContent)
 
 })
+
+socket.on('imageview', (src)=> {
+   
+    let imgview = document.createElement('img')
+    imgview.src = src
+
+    document.querySelector('#msgcontent').appendChild(imgview)
+    
+})
+
+// socket.on('file', (data) =>{
+    
+
+//     let img = document.createElement('img')
+//     img.src = data.file
+
+//     document.querySelector('#msgcontent').appendChild(img)
+   
+// })
 
 
 
@@ -138,5 +155,57 @@ function _join(nom) {
     socket.emit('select', nom)
 }
 
+function handleFiles(files) {
+   
+    let imageType = /^image\//;
+    for (let i = 0; i < files.length; i++) {
+    let file = files[i];
+    if (!imageType.test(file.type)) {
+      alert("on prend que les images");
+    }else{
+     
+      let img = document.createElement("img");
+      img.style.width="200px"
+      
+   
+      img.file = file;
+      document.querySelector("#msgcontent").appendChild(img); 
+      let reader = new FileReader();
+     
+      reader.onload = ( function(aImg) { 
+        
+      return function(e) {
+        let src =  e.target.result;
+        socket.emit('testimg',src )
+       aImg.src = e.target.result; 
+    
+    }; 
+   })(img);
+ 
+  reader.readAsDataURL(file);
+
+  
+ 
+  }
+  
+  }
+ }
+// function readThenSendFile(data){
+
+//     var reader = new FileReader();
+//     reader.onload = function(evt){
+//         var msg ={};
+//         msg.username = "bite";
+//         msg.file = evt.target.result;
+//         msg.fileName = data.name;
+//         socket.emit('base64 file', msg);
+//     };
+//     reader.readAsDataURL(data);
+// }
+
+// document.querySelector('#upload').addEventListener('change', function(e){
+//     var data = e.target.files[0];
+//     readThenSendFile(data);      
+// });
 
 // onkeypress="writting()" onblur="notWritting()"

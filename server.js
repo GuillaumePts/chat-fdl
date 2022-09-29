@@ -80,7 +80,7 @@ let connectedUsers = []
 
 
 io.on('connection', (socket) => {
- 
+
     socket.on('pseudo', (pseudo) => {
 
 
@@ -142,7 +142,29 @@ io.on('connection', (socket) => {
 
     })
 
-   
+    socket.on('testimg', (src)=>{
+      console.log(src);
+      
+      socket.broadcast.to(socket.room.name).emit('imageview', src)
+    })
+
+    // socket.on('base64 file', function (msg) {
+    //     console.log('received base64 file from');
+    //     console.log(msg);
+      
+    //     // socket.broadcast.emit('base64 image', //exclude sender
+    //     io.sockets.emit('file',  //include sender
+    
+    //         {
+              
+    //           file: msg.file,
+    //           fileName: msg.fileName
+    //         }
+
+            
+    
+    //     );
+    // });
 
 
 
