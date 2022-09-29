@@ -7,7 +7,8 @@ const fs = require('fs')
 
 const ObjectId = mongoose.Types.ObjectId;
 
-const mdp = require('./env')
+const mdp = require('./env');
+const { Server } = require('http');
 
 try {
     // Connect to the MongoDB cluster
@@ -74,7 +75,9 @@ app.use(function (req, res, next) {
 
 // SOCKET
 
-let io = require('socket.io')(server);
+let io = require('socket.io')(server, {
+    maxHttpBufferSize: 1e8
+});
 
 let connectedUsers = []
 
