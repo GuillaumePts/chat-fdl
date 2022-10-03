@@ -19,6 +19,8 @@
         <% users.forEach(user => { %>
            <button onclick="_join('<%= user.pseudo %>')" id="<%= user.pseudo %>"><%= user.pseudo %></button>  
             <% });%>
+
+           
     </div>
     <div id="content">
        
@@ -32,7 +34,7 @@
         <div id="footer">
             <form method="post" id="chatForm">
                  <input type="text" id="msgInput" autofocus  /> 
-                 <input type="file" onchange="handleFiles(files)"  id="upload" multiple name="file" />
+                 <input style="width: 20px;" type="file" onchange="handleFiles(files)"  id="upload" multiple name="file" />
                  
               
               
@@ -43,6 +45,8 @@
     <script src="/socket.io/socket.io.js"></script>
 
     <script src="app.js"></script>
+
+    <script src="style.js"></script>
 
     
 

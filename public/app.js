@@ -1,3 +1,5 @@
+
+
 let socket = io.connect('http://localhost:9999');
 
 let pseudo = ''
@@ -16,6 +18,8 @@ document.title = pseudo
 
 document.querySelector('#chatForm').addEventListener('submit', (e) => {
 
+    
+
     e.preventDefault();
 
     const textInput = document.querySelector('#msgInput').value;
@@ -29,6 +33,7 @@ document.querySelector('#chatForm').addEventListener('submit', (e) => {
 
         socket.emit('message', textInput);
         createElementFunction('moi', textInput)
+       
 
     } else {
         return false;
@@ -185,7 +190,7 @@ function createElementFunction(element, content, content2) {
 
 function _join(nom) {
 
-    // document.querySelector('#name').textContent = nom 
+   
     document.querySelector('#msgcontent').innerHTML = '';
 
     socket.emit('select', nom)

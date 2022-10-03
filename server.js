@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose')
 const server = require('http').createServer(app);
-const fs = require('fs')
+// const fs = require('fs')
 
 
 const ObjectId = mongoose.Types.ObjectId;
