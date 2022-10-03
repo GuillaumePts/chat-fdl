@@ -8,7 +8,7 @@ const fs = require('fs')
 const ObjectId = mongoose.Types.ObjectId;
 
 const mdp = require('./env');
-const { Server } = require('http');
+
 
 try {
     // Connect to the MongoDB cluster
@@ -145,30 +145,24 @@ io.on('connection', (socket) => {
 
     })
 
-    socket.on('testimg', (src)=>{
-      console.log(src);
+    socket.on('testimg', (src, lereceiver)=>{
+      
+        
+        lereceiver = receiver
+
+        let chat = new Chat();
+        chat.id_room = socket.room.name;
+        chat.content = src;
+        chat.sender = socket.pseudo;
+        chat.receiver = lereceiver;
+        chat.save();
+
+        
       
       socket.broadcast.to(socket.room.name).emit('imageview', src)
     })
 
-    // socket.on('base64 file', function (msg) {
-    //     console.log('received base64 file from');
-    //     console.log(msg);
-      
-    //     // socket.broadcast.emit('base64 image', //exclude sender
-    //     io.sockets.emit('file',  //include sender
-    
-    //         {
-              
-    //           file: msg.file,
-    //           fileName: msg.fileName
-    //         }
-
-            
-    
-    //     );
-    // });
-
+   
 
 
     socket.on('disconnect', () => {

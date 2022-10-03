@@ -68,6 +68,7 @@ body{
     overflow-y: scroll;
     overflow-x: hidden;
     scroll-behavior: smooth;
+    width: 100%;
     
 }
 
@@ -78,7 +79,7 @@ body{
 .message{
     width: 100%;
   
-  
+    overflow: hidden;
    margin: 10px 0;
    
 }
@@ -124,10 +125,15 @@ body{
     align-items: center;
     border-radius: 20px;
     max-width: 55%;
-   
+  
     padding: 7px;
     height: fit-content;
    
+}
+
+.img{
+    max-width: 200px;
+    max-height: 300px;
 }
 
 #footer{

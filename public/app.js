@@ -21,31 +21,21 @@ document.querySelector('#chatForm').addEventListener('submit', (e) => {
     const textInput = document.querySelector('#msgInput').value;
     document.querySelector('#msgInput').value = '';
 
-    // const imgInput = document.querySelector('#imgInput');
-     
-    
+
+
+
 
     if (textInput.length > 0) {
 
         socket.emit('message', textInput);
         createElementFunction('moi', textInput)
-     
+
     } else {
         return false;
     }
 
-    // if (imgInput ) {
 
-    //     socket.emit('image', imgInput);
-    //     createImage(imgInput.files[0])
-    //     console.log(imgInput.files[0].name);
-    // } else {
-    //     return false;
-    // }
 
-    
-        
-      
 })
 
 
@@ -65,33 +55,43 @@ socket.on('messageView', (data) => {
 })
 
 socket.on('oldMessagesMe', (messageSender, messageContent) => {
-    createElementFunction('oldMessagesMe', messageSender, messageContent)
+
+    if (messageContent.length > 8000) {
+
+        createElementFunction('oldimgme', messageContent)
+
+    } else {
+
+        createElementFunction('oldMessagesMe', messageSender, messageContent)
+
+    }
+
 
 })
 
 socket.on('oldMessages', (messageSender, messageContent) => {
-    createElementFunction('oldMessages', messageSender, messageContent)
+
+    if (messageContent.length > 8000) {
+
+        createElementFunction('oldimgautre', messageContent)
+
+    }else{
+
+        createElementFunction('oldMessages', messageSender, messageContent)
+
+    }
+    
 
 })
 
-socket.on('imageview', (src)=> {
-   
-    let imgview = document.createElement('img')
-    imgview.src = src
+socket.on('imageview', (src) => {
 
-    document.querySelector('#msgcontent').appendChild(imgview)
-    
+
+    createElementFunction('imageautre', src)
+
 })
 
-// socket.on('file', (data) =>{
-    
 
-//     let img = document.createElement('img')
-//     img.src = data.file
-
-//     document.querySelector('#msgcontent').appendChild(img)
-   
-// })
 
 
 
@@ -140,6 +140,42 @@ function createElementFunction(element, content, content2) {
             newElement.appendChild(messagemoi)
             break;
 
+        case 'imageautre':
+            newElement.classList.add('autre', 'message');
+            document.getElementById('msgcontent').appendChild(newElement);
+
+            let imgview = document.createElement('img')
+            imgview.classList.add('img')
+            imgview.src = content
+
+            newElement.appendChild(imgview)
+
+            break;
+
+        case 'oldimgautre':
+            newElement.classList.add('autre', 'message');
+            document.getElementById('msgcontent').appendChild(newElement);
+
+            let oldimgautre = document.createElement('img')
+            oldimgautre.classList.add('img')
+            oldimgautre.src = content
+
+            newElement.appendChild(oldimgautre)
+
+            break;
+
+        case 'oldimgme':
+            newElement.classList.add('moi', 'message');
+            document.getElementById('msgcontent').appendChild(newElement);
+
+            let oldimgme = document.createElement('img')
+            oldimgme.classList.add('img')
+            oldimgme.src = content
+
+            newElement.appendChild(oldimgme)
+
+            break;
+
 
     }
 
@@ -156,56 +192,43 @@ function _join(nom) {
 }
 
 function handleFiles(files) {
-   
+
     let imageType = /^image\//;
     for (let i = 0; i < files.length; i++) {
-    let file = files[i];
-    if (!imageType.test(file.type)) {
-      alert("on prend que les images");
-    }else{
-     
-      let img = document.createElement("img");
-      img.style.width="200px"
-      
-   
-      img.file = file;
-      document.querySelector("#msgcontent").appendChild(img); 
-      let reader = new FileReader();
-     
-      reader.onload = ( function(aImg) { 
-        
-      return function(e) {
-        let src =  e.target.result;
-        socket.emit('testimg',src )
-       aImg.src = e.target.result; 
-    
-    }; 
-   })(img);
- 
-  reader.readAsDataURL(file);
+        let file = files[i];
+        if (!imageType.test(file.type)) {
+            alert("on prend que les images");
+        } else {
 
-  
- 
-  }
-  
-  }
- }
-// function readThenSendFile(data){
+            let img = document.createElement("img");
+            let newElement = document.createElement('div');
+            newElement.classList.add('moi', 'message');
+            document.getElementById('msgcontent').appendChild(newElement);
+            img.classList.add('img')
+            newElement.appendChild(img)
 
-//     var reader = new FileReader();
-//     reader.onload = function(evt){
-//         var msg ={};
-//         msg.username = "bite";
-//         msg.file = evt.target.result;
-//         msg.fileName = data.name;
-//         socket.emit('base64 file', msg);
-//     };
-//     reader.readAsDataURL(data);
-// }
 
-// document.querySelector('#upload').addEventListener('change', function(e){
-//     var data = e.target.files[0];
-//     readThenSendFile(data);      
-// });
 
-// onkeypress="writting()" onblur="notWritting()"
+
+            img.file = file;
+
+            let reader = new FileReader();
+
+            reader.onload = (function (aImg) {
+
+                return function (e) {
+                    let src = e.target.result;
+                    socket.emit('testimg', src)
+                    aImg.src = e.target.result;
+
+                };
+            })(img);
+
+            reader.readAsDataURL(file);
+
+
+
+        }
+
+    }
+}
