@@ -29,11 +29,12 @@
         </div>
         <div id="main">
         <div id="msgcontent"></div>
+        <div id="isWritting"></div>
         </div>
    
         <div id="footer">
             <form method="post" id="chatForm">
-                 <input type="text" id="msgInput" autofocus  /> 
+                 <input type="text" id="msgInput" autofocus onkeypress="writting()" onblur="notWritting()"  /> 
                  <input style="width: 20px;" type="file" onchange="handleFiles(files)"  id="upload" multiple name="file" />
                  
               

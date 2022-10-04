@@ -190,6 +190,15 @@ io.on('connection', (socket) => {
     })
 
 
+    socket.on('writting', (pseudo) => {
+        socket.broadcast.emit('writting', pseudo);
+    })
+
+    socket.on('notWritting', () => {
+        socket.broadcast.emit('notWritting');
+    })
+
+
 
 
     socket.on('disconnect', () => {

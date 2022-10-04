@@ -120,9 +120,22 @@ socket.on('imageview', (src) => {
 
 })
 
+socket.on('writting', (pseudo) => {
+    document.querySelector('#isWritting').textContent = pseudo + ' est en train d\'écrire'
+})
+socket.on('notWritting', () => {
+    document.querySelector('#isWritting').textContent = ''
+})
 
 
 
+function writting() {
+    socket.emit('writting', pseudo)
+}
+
+function notWritting() {
+    socket.emit('notWritting')
+}
 
 
 function createElementFunction(element, content, content2) {
