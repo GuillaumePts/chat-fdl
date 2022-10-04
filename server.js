@@ -133,7 +133,9 @@ io.on('connection', (socket) => {
 
         if(lesconnecte.includes(nom)){
             console.log(nom +' est co');
+            socket.emit('co', nom)
         }else{
+            socket.emit('pasco', nom)
             console.log(nom + ' est pas co');
         }
        

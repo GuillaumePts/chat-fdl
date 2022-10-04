@@ -64,6 +64,16 @@ socket.on('namespace', (data) => {
 
 })
 
+socket.on('co', (nom)=>{
+     document.querySelector('#'+nom).classList.add('connected')
+})
+
+socket.on('pasco', (nom)=>{
+    document.querySelector('#'+nom).classList.remove('connected')
+})
+
+
+
 
 
 
