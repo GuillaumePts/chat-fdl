@@ -1,5 +1,6 @@
 
 
+
 let socket = io.connect('http://localhost:9999');
 
 let pseudo = ''
@@ -9,7 +10,8 @@ if (pseudo === '') {
 
 }
 
-
+let tabDesConnect = [];
+let header= document.querySelector('#header')
 
 console.log(pseudo);
 
@@ -46,13 +48,25 @@ document.querySelector('#chatForm').addEventListener('submit', (e) => {
 
 
 
-
-
 socket.on('namespace', (data) => {
 
-    document.querySelector('#name').textContent = data
+    header.innerHTML=''
+
+   let namespace = document.createElement('p')
+   namespace.textContent= data
+   header.appendChild(namespace)
+
+   let connect = document.createElement('div')
+   connect.id = data
+   header.appendChild(connect)
+   
+
 
 })
+
+
+
+
 
 socket.on('messageView', (data) => {
 

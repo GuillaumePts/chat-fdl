@@ -80,6 +80,7 @@ let io = require('socket.io')(server, {
 });
 
 let connectedUsers = []
+let lesconnecte = []
 
 
 io.on('connection', (socket) => {
@@ -101,10 +102,23 @@ io.on('connection', (socket) => {
 
             }
 
+
             connectedUsers.push(socket);
+            lesconnecte.push(socket.pseudo)
+
+
+
+
+
+
+
+
+
 
         })
     })
+
+
 
 
 
@@ -117,7 +131,18 @@ io.on('connection', (socket) => {
         socket.emit('namespace', nom)
         receiver = nom
 
+        if(lesconnecte.includes(nom)){
+            console.log(nom +' est co');
+        }else{
+            console.log(nom + ' est pas co');
+        }
+       
+      
+
     })
+
+
+
 
 
 
@@ -145,9 +170,9 @@ io.on('connection', (socket) => {
 
     })
 
-    socket.on('testimg', (src, lereceiver)=>{
-      
-        
+    socket.on('testimg', (src, lereceiver) => {
+
+
         lereceiver = receiver
 
         let chat = new Chat();
@@ -157,19 +182,26 @@ io.on('connection', (socket) => {
         chat.receiver = lereceiver;
         chat.save();
 
-        
-      
-      socket.broadcast.to(socket.room.name).emit('imageview', src)
+
+
+        socket.broadcast.to(socket.room.name).emit('imageview', src)
     })
 
-   
+
 
 
     socket.on('disconnect', () => {
         let index = connectedUsers.indexOf(socket);
         if (index > -1) {
             connectedUsers.splice(index, 1)
+            //    io.emit('deco', socket.pseudo)
         }
+        let index2 = lesconnecte.indexOf(socket.pseudo);
+        if (index2 > -1) {
+            lesconnecte.splice(index2, 1)
+            //    io.emit('deco', socket.pseudo)
+        }
+
     })
 
     //  FUNCTION 
@@ -253,6 +285,11 @@ io.on('connection', (socket) => {
     }
 
 })
+
+
+
+
+
 
 
 

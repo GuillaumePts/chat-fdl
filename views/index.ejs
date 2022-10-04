@@ -17,7 +17,7 @@
     <div id="liste-users">
         <h1>liste user</h1>
         <% users.forEach(user => { %>
-           <button onclick="_join('<%= user.pseudo %>')" id="<%= user.pseudo %>"><%= user.pseudo %></button>  
+           <button onclick="_join('<%= user.pseudo %>')" ><%= user.pseudo %></button>  
             <% });%>
 
            
@@ -25,7 +25,7 @@
     <div id="content">
        
         <div id="header">
-            <p id="name"></p>
+       
         </div>
         <div id="main">
         <div id="msgcontent"></div>
