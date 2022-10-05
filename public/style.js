@@ -1,4 +1,5 @@
 
-function test(){
-    console.log('ça marche sur mobile');
-}
+
+// cloche.addEventListener('mouseleave', ()=>{
+//     document.querySelector('#notif').style.display='none'
+// })

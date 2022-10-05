@@ -198,6 +198,11 @@ io.on('connection', (socket) => {
         socket.broadcast.emit('notWritting');
     })
 
+    socket.on('messagerie', (data)=>{
+
+        console.log('recherche toutes les salles ou figure '+data);
+    })
+
 
 
 

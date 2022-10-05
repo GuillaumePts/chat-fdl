@@ -1,6 +1,3 @@
-
-
-
 let socket = io.connect('http://localhost:9999');
 
 let pseudo = ''
@@ -11,7 +8,7 @@ if (pseudo === '') {
 }
 
 let tabDesConnect = [];
-let header= document.querySelector('#header')
+let header = document.querySelector('#header')
 
 console.log(pseudo);
 
@@ -20,7 +17,7 @@ document.title = pseudo
 
 document.querySelector('#chatForm').addEventListener('submit', (e) => {
 
-    
+
 
     e.preventDefault();
 
@@ -35,7 +32,7 @@ document.querySelector('#chatForm').addEventListener('submit', (e) => {
 
         socket.emit('message', textInput);
         createElementFunction('moi', textInput)
-       
+
 
     } else {
         return false;
@@ -50,26 +47,31 @@ document.querySelector('#chatForm').addEventListener('submit', (e) => {
 
 socket.on('namespace', (data) => {
 
-    header.innerHTML=''
+    header.innerHTML = ''
 
-   let namespace = document.createElement('p')
-   namespace.textContent= data
-   header.appendChild(namespace)
+    let interloc =document.createElement('div')
+    interloc.id='interloc'
+    header.appendChild(interloc)
 
-   let connect = document.createElement('div')
-   connect.id = data
-   header.appendChild(connect)
-   
+    let namespace = document.createElement('p')
+    namespace.id = 'name'
+    namespace.textContent = data
+    interloc.appendChild(namespace)
+
+    let connect = document.createElement('div')
+    connect.id = data
+    interloc.appendChild(connect)
+
 
 
 })
 
-socket.on('co', (nom)=>{
-     document.querySelector('#'+nom).classList.add('connected')
+socket.on('co', (nom) => {
+    document.querySelector('#' + nom).classList.add('connected')
 })
 
-socket.on('pasco', (nom)=>{
-    document.querySelector('#'+nom).classList.remove('connected')
+socket.on('pasco', (nom) => {
+    document.querySelector('#' + nom).classList.remove('connected')
 })
 
 
@@ -104,12 +106,12 @@ socket.on('oldMessages', (messageSender, messageContent) => {
 
         createElementFunction('oldimgautre', messageContent)
 
-    }else{
+    } else {
 
         createElementFunction('oldMessages', messageSender, messageContent)
 
     }
-    
+
 
 })
 
@@ -227,7 +229,7 @@ function createElementFunction(element, content, content2) {
 
 function _join(nom) {
 
-   
+
     document.querySelector('#msgcontent').innerHTML = '';
 
     socket.emit('select', nom)
@@ -274,3 +276,30 @@ function handleFiles(files) {
 
     }
 }
+
+// PARTIE NOTIF ? LISTE DES CONVS ------------------------------------//
+
+let cloche = document.querySelector('#cloche')
+
+
+cloche.addEventListener('click', () => {
+
+    socket.emit('messagerie', (pseudo))
+    
+   document.querySelector('#interloc').style.display="none"
+    
+    let messagerie = document.createElement('div')
+    messagerie.id = "messagerie"
+    header.appendChild(messagerie)
+
+    let fermer =document.createElement('div')
+    fermer.id="fermer"
+    fermer.textContent="❌"
+    messagerie.appendChild(fermer)
+
+    fermer.addEventListener('click', () => {
+        header.removeChild(messagerie)
+        document.querySelector('#interloc').style.display="flex"
+
+    })
+})

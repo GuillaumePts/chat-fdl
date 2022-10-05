@@ -41,12 +41,13 @@ button{
     background-color: var(--color2-);
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 70px 1fr 70px;
+    grid-template-rows: auto 1fr 70px;
     grid-template-areas: 
     'header'
     'main'
     'footer';
     overflow: hidden;
+    position: relative;
 }
 
 #header{
@@ -56,7 +57,15 @@ button{
     justify-content: center;
     align-items: center;
     gap: 10px ;
-    position: relative;
+    min-height: 70px;
+}
+
+#interloc{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
 }
 
 #cloche{
@@ -77,6 +86,27 @@ padding: 5px;
     left: 37px;
     bottom: 8px;
     display: none;
+}
+
+#messagerie{
+    background-color: var(--color2-);
+    width: 450px;
+    min-height: 200px;
+    display: flex;
+    
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+#fermer{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    background-color: #333;
 }
 
 .connected{
