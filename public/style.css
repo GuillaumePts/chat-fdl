@@ -56,6 +56,27 @@ button{
     justify-content: center;
     align-items: center;
     gap: 10px ;
+    position: relative;
+}
+
+#cloche{
+position: absolute;
+top: 0;
+left: 0;
+font-size: 2rem;
+padding: 5px;
+
+}
+
+#notif{
+    background-color: red;
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    position: absolute;
+    left: 37px;
+    bottom: 8px;
+    display: none;
 }
 
 .connected{

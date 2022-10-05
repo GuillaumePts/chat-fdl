@@ -17,28 +17,32 @@
     <div id="liste-users">
         <h1>liste user</h1>
         <% users.forEach(user => { %>
-           <button onclick="_join('<%= user.pseudo %>')" ><%= user.pseudo %></button>  
-            <% });%>
+        <button onclick="_join('<%= user.pseudo %>')"><%= user.pseudo %></button>
+        <% });%>
 
-           
+
     </div>
     <div id="content">
-       
+
         <div id="header">
-       
+
+            <div id="cloche">🔔
+                <div id="notif"></div>
+            </div>
         </div>
         <div id="main">
-        <div id="msgcontent"></div>
-        <div id="isWritting"></div>
+            <div id="msgcontent"></div>
+            <div id="isWritting"></div>
         </div>
-   
+
         <div id="footer">
             <form method="post" id="chatForm">
-                 <input type="text" id="msgInput" autofocus onkeypress="writting()" onblur="notWritting()"  /> 
-                 <input style="width: 20px;" type="file" onchange="handleFiles(files)"  id="upload" multiple name="file" />
-                 
-              
-              
+                <input type="text" id="msgInput" autofocus onkeypress="writting()" onblur="notWritting()" />
+                <input style="width: 20px;" type="file" onchange="handleFiles(files)" id="upload" multiple
+                    name="file" />
+
+
+
             </form>
         </div>
     </div>
@@ -49,7 +53,7 @@
 
     <script src="style.js"></script>
 
-    
+
 
 </body>
 
