@@ -284,6 +284,8 @@ let cloche = document.querySelector('#cloche')
 
 cloche.addEventListener('click', () => {
 
+   cloche.style.display="none"
+
     socket.emit('messagerie', (pseudo))
     
    document.querySelector('#interloc').style.display="none"
@@ -300,6 +302,7 @@ cloche.addEventListener('click', () => {
     fermer.addEventListener('click', () => {
         header.removeChild(messagerie)
         document.querySelector('#interloc').style.display="flex"
+        cloche.style.display="block"
 
     })
 })
@@ -309,6 +312,10 @@ socket.on('user1', (data)=>{
     let conv = document.createElement('div')
     conv.classList.add('conv')
     conv.textContent=data
+    conv.addEventListener('click', ()=>{
+        cloche.style.display="block"
+        _join(data)
+    })
     messagerie.appendChild(conv)
 })
 
@@ -317,5 +324,10 @@ socket.on('user2', (data)=>{
     let conv = document.createElement('div')
     conv.classList.add('conv')
     conv.textContent=data
+    conv.addEventListener('click', ()=>{
+        cloche.style.display="block"
+        _join(data)
+    })
+    
     messagerie.appendChild(conv)
 })
