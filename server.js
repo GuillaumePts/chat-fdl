@@ -200,7 +200,9 @@ io.on('connection', (socket) => {
 
     socket.on('messagerie', (data)=>{
 
-        console.log('recherche toutes les salles ou figure '+data);
+        // console.log('recherche toutes les salles ou figure '+data);
+        messageries(data)
+
     })
 
 
@@ -300,7 +302,41 @@ io.on('connection', (socket) => {
 
     }
 
+    function messageries(pseudo){
+ 
+   
+        Room.find({
+            user1 : pseudo 
+        }, (err, rooms1) =>{
+            if(rooms1){
+          
+                rooms1.forEach(room1 =>{
+                    socket.emit('user1', room1.user2)
+                })
+            
+            }else{
+                
+            }
+        })
+        Room.find({
+            user2 : pseudo
+        }, (err, rooms2) =>{
+            if(rooms2){
+                rooms2.forEach(room2 =>{
+                    
+                    socket.emit('user2', room2.user1)
+                })
+             
+            }else{
+                console.log("pas de conv");
+            }
+        })
+    
+    }
+
 })
+
+
 
 
 

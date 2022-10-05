@@ -303,3 +303,19 @@ cloche.addEventListener('click', () => {
 
     })
 })
+
+socket.on('user1', (data)=>{
+    let messagerie = document.querySelector('#messagerie')
+    let conv = document.createElement('div')
+    conv.classList.add('conv')
+    conv.textContent=data
+    messagerie.appendChild(conv)
+})
+
+socket.on('user2', (data)=>{
+    let messagerie = document.querySelector('#messagerie')
+    let conv = document.createElement('div')
+    conv.classList.add('conv')
+    conv.textContent=data
+    messagerie.appendChild(conv)
+})

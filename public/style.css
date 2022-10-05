@@ -91,7 +91,7 @@ padding: 5px;
 #messagerie{
     background-color: var(--color2-);
     width: 450px;
-    min-height: 200px;
+    max-width: 500px;
     display: flex;
     
     flex-direction: column;
@@ -99,6 +99,14 @@ padding: 5px;
     align-items: center;
     margin-top: 30px;
     margin-bottom: 10px;
+}
+
+.conv{
+    width: 100%;
+    min-height: 30px;
+    border-bottom: 1px solid black;
+    display: flex;
+    align-items: center;
 }
 
 #fermer{
