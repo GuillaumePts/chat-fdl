@@ -131,15 +131,15 @@ io.on('connection', (socket) => {
         socket.emit('namespace', nom)
         receiver = nom
 
-        if(lesconnecte.includes(nom)){
-            console.log(nom +' est co');
+        if (lesconnecte.includes(nom)) {
+            console.log(nom + ' est co');
             socket.emit('co', nom)
-        }else{
+        } else {
             socket.emit('pasco', nom)
             console.log(nom + ' est pas co');
         }
-       
-      
+
+
 
     })
 
@@ -198,12 +198,14 @@ io.on('connection', (socket) => {
         socket.broadcast.emit('notWritting');
     })
 
-    socket.on('messagerie', (data)=>{
+    socket.on('messagerie', (data) => {
 
         // console.log('recherche toutes les salles ou figure '+data);
         messageries(data)
 
     })
+
+    
 
 
 
@@ -302,36 +304,75 @@ io.on('connection', (socket) => {
 
     }
 
-    function messageries(pseudo){
- 
-   
+
+    function messageries(pseudo) {
+
+
         Room.find({
-            user1 : pseudo 
-        }, (err, rooms1) =>{
-            if(rooms1){
-          
-                rooms1.forEach(room1 =>{
-                    socket.emit('user1', room1.user2)
+            user1: pseudo
+        }, (err, rooms1) => {
+            if (rooms1) {
+
+                rooms1.forEach(room1 => {
+                    Chat.findOne({
+                        id_room: room1.name
+                    }, (err, messages) => {
+                        if (messages === null) {
+                            let x = 'pas de message avec ' + room1.user2
+                            socket.emit('conversation', {
+                                msg : x,
+                                user: room1.user2
+                            })
+                        } else {
+                            messages.content;
+                            socket.emit('conversation', {
+                                msg : messages.content,
+                                user: room1.user2
+                            })
+                        }
+                    }).sort({
+                        $natural: -1
+                    })
                 })
-            
-            }else{
-                
+
+
+
             }
         })
         Room.find({
-            user2 : pseudo
-        }, (err, rooms2) =>{
-            if(rooms2){
-                rooms2.forEach(room2 =>{
-                    
-                    socket.emit('user2', room2.user1)
+            user2: pseudo
+        }, (err, rooms2) => {
+            if (rooms2) {
+
+                rooms2.forEach(room2 => {
+
+                    Chat.findOne({
+                        id_room: room2.name
+                    }, (err, messages) => {
+                        if (messages === null) {
+                            let x = 'pas de message avec ' + room2.user1
+                            socket.emit('conversation', {
+                                msg : x,
+                                user: room2.user1
+                            })
+                        } else {
+                            messages.content;
+                            socket.emit('conversation', {
+                                msg : messages.content,
+                                user: room2.user1
+                            })
+                        }
+                    }).sort({
+                        $natural: -1
+                    })
+
                 })
-             
-            }else{
+
+            } else {
                 console.log("pas de conv");
             }
         })
-    
+
     }
 
 })
