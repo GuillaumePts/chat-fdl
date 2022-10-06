@@ -324,11 +324,19 @@ io.on('connection', (socket) => {
                                 user: room1.user2
                             })
                         } else {
-                            messages.content;
-                            socket.emit('conversation', {
-                                msg : messages.content,
-                                user: room1.user2
-                            })
+                           
+                            if(messages.content.length > 5000){
+
+                                socket.emit('conversation', {
+                                    msg : 'photo',
+                                    user: room1.user2
+                                })
+                               }else{
+                                socket.emit('conversation', {
+                                    msg : messages.content,
+                                    user: room1.user2
+                                })
+                               }
                         }
                     }).sort({
                         $natural: -1
@@ -356,11 +364,19 @@ io.on('connection', (socket) => {
                                 user: room2.user1
                             })
                         } else {
-                            messages.content;
+                           if(messages.content.length > 5000){
+
+                            socket.emit('conversation', {
+                                msg : 'photo',
+                                user: room2.user1
+                            })
+                           }else{
                             socket.emit('conversation', {
                                 msg : messages.content,
                                 user: room2.user1
                             })
+                           }
+                            
                         }
                     }).sort({
                         $natural: -1
