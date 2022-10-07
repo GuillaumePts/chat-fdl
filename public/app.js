@@ -322,3 +322,14 @@ socket.on('conversation', (data)=>{
     
 })
 
+socket.on('nbrNotif', (data)=>{
+
+    if(data ===0){
+        return false
+    }else{
+        let notif = document.querySelector('#notif')
+        notif.style.display='block'
+        notif.textContent=data
+    }
+})
+

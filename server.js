@@ -81,7 +81,7 @@ let io = require('socket.io')(server, {
 
 let connectedUsers = []
 let lesconnecte = []
-
+let notifs = []
 
 io.on('connection', (socket) => {
 
@@ -108,6 +108,7 @@ io.on('connection', (socket) => {
 
 
 
+            searchNotifs()
 
 
 
@@ -131,12 +132,14 @@ io.on('connection', (socket) => {
         socket.emit('namespace', nom)
         receiver = nom
 
+
+
         if (lesconnecte.includes(nom)) {
-            console.log(nom + ' est co');
+
             socket.emit('co', nom)
         } else {
             socket.emit('pasco', nom)
-            console.log(nom + ' est pas co');
+
         }
 
 
@@ -159,6 +162,13 @@ io.on('connection', (socket) => {
         chat.sender = socket.pseudo;
         chat.receiver = lereceiver;
         chat.save();
+
+
+
+        notifs.push({
+            lesender: socket.pseudo,
+            lereceiver: lereceiver
+        })
 
 
 
@@ -205,7 +215,7 @@ io.on('connection', (socket) => {
 
     })
 
-    
+
 
 
 
@@ -320,23 +330,23 @@ io.on('connection', (socket) => {
                         if (messages === null) {
                             let x = 'pas de message avec ' + room1.user2
                             socket.emit('conversation', {
-                                msg : x,
+                                msg: x,
                                 user: room1.user2
                             })
                         } else {
-                           
-                            if(messages.content.length > 5000){
+
+                            if (messages.content.length > 5000) {
 
                                 socket.emit('conversation', {
-                                    msg : 'photo',
+                                    msg: 'photo',
                                     user: room1.user2
                                 })
-                               }else{
+                            } else {
                                 socket.emit('conversation', {
-                                    msg : messages.content,
+                                    msg: messages.content,
                                     user: room1.user2
                                 })
-                               }
+                            }
                         }
                     }).sort({
                         $natural: -1
@@ -360,23 +370,23 @@ io.on('connection', (socket) => {
                         if (messages === null) {
                             let x = 'pas de message avec ' + room2.user1
                             socket.emit('conversation', {
-                                msg : x,
+                                msg: x,
                                 user: room2.user1
                             })
                         } else {
-                           if(messages.content.length > 5000){
+                            if (messages.content.length > 5000) {
 
-                            socket.emit('conversation', {
-                                msg : 'photo',
-                                user: room2.user1
-                            })
-                           }else{
-                            socket.emit('conversation', {
-                                msg : messages.content,
-                                user: room2.user1
-                            })
-                           }
-                            
+                                socket.emit('conversation', {
+                                    msg: 'photo',
+                                    user: room2.user1
+                                })
+                            } else {
+                                socket.emit('conversation', {
+                                    msg: messages.content,
+                                    user: room2.user1
+                                })
+                            }
+
                         }
                     }).sort({
                         $natural: -1
@@ -389,6 +399,27 @@ io.on('connection', (socket) => {
             }
         })
 
+    }
+
+
+
+    function searchNotifs() {
+        let nbrNotif = 0
+        if (notifs.length === 0) {
+            console.log('pas de nouveau message pour tous le monde');
+        } else {
+            notifs.forEach(notif => {
+                if (notif.lereceiver === socket.pseudo) {
+
+                    nbrNotif++
+
+                    console.log('tu as reçu un message de ' + notif.lesender);
+                    
+                }
+            })
+            console.log('tu as '+nbrNotif+' nouveaux messages');
+            socket.emit('nbrNotif' , nbrNotif)
+        }
     }
 
 })
