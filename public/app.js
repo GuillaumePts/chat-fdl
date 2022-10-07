@@ -76,13 +76,16 @@ socket.on('pasco', (nom) => {
 
 
 
-
+socket.on('newMessage', ()=>{
+    socket.emit('searchLaNotif')
+})
 
 
 
 socket.on('messageView', (data) => {
 
     createElementFunction('autre', data)
+    
 })
 
 socket.on('oldMessagesMe', (messageSender, messageContent) => {

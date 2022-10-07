@@ -83,6 +83,8 @@ let connectedUsers = []
 let lesconnecte = []
 let notifs = []
 
+
+
 io.on('connection', (socket) => {
 
     socket.on('pseudo', (pseudo) => {
@@ -171,7 +173,7 @@ io.on('connection', (socket) => {
         })
 
 
-
+      
 
         socket.broadcast.to(socket.room.name).emit('messageView', {
             message: message,
@@ -179,8 +181,18 @@ io.on('connection', (socket) => {
         })
 
 
+       io.emit('newMessage')
+        
+
 
     })
+
+   
+
+    socket.on('searchLaNotif',()=>{
+        searchNotifs()
+    })
+
 
     socket.on('testimg', (src, lereceiver) => {
 
