@@ -303,6 +303,7 @@ cloche.addEventListener('click', () => {
         header.removeChild(messagerie)
         document.querySelector('#interloc').style.display="flex"
         cloche.style.display="block"
+        socket.emit('resetNotifs')
 
     })
 })
@@ -325,7 +326,11 @@ socket.on('conversation', (data)=>{
 socket.on('nbrNotif', (data)=>{
 
     if(data ===0){
-        return false
+
+        let notif = document.querySelector('#notif')
+        notif.style.display='none'
+
+        
     }else{
         let notif = document.querySelector('#notif')
         notif.style.display='block'

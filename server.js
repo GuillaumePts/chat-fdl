@@ -215,7 +215,9 @@ io.on('connection', (socket) => {
 
     })
 
-
+socket.on('resetNotifs', ()=>{
+    resetNotifs()
+})
 
 
 
@@ -420,6 +422,23 @@ io.on('connection', (socket) => {
             console.log('tu as '+nbrNotif+' nouveaux messages');
             socket.emit('nbrNotif' , nbrNotif)
         }
+    }
+
+    function resetNotifs(){
+        notifs.forEach(notif => {
+            if (notif.lereceiver === socket.pseudo) {
+                let index = notifs.indexOf(notif);
+               
+                    notifs.splice(index, 1)
+                   
+              
+
+                nbrNotif = 0
+
+                socket.emit('nbrNotif' , nbrNotif)
+                
+            }
+        })
     }
 
 })
