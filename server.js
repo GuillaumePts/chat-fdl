@@ -130,6 +130,9 @@ io.on('connection', (socket) => {
 
     socket.on('select', (nom) => {
 
+        console.log('bite');
+        console.log(nom);
+
         rechercheRoom(nom, socket.pseudo)
         socket.emit('namespace', nom)
         receiver = nom
@@ -468,4 +471,4 @@ socket.on('resetNotifs', ()=>{
 
 
 
-server.listen(9999, () => console.log('server ok ! : http://localhost:9999'));
+server.listen(9999, () => console.log('server ok ! : http://192.168.1.13:9999'));

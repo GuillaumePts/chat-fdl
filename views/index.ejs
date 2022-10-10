@@ -11,13 +11,12 @@
 </head>
 
 <body>
-
-
+<button id="jtest">jquery</button>
 
     <div id="liste-users">
         <h1>liste user</h1>
         <% users.forEach(user => { %>
-        <button onclick="_join('<%= user.pseudo %>')"><%= user.pseudo %></button>
+        <button onclick="_join('<%= user.pseudo %>')" ><%= user.pseudo %></button>
         <% });%>
 
 
@@ -55,6 +54,7 @@
 
     <script src="style.js"></script>
 
+    
 
 
 </body>

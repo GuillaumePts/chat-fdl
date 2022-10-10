@@ -1,4 +1,6 @@
-let socket = io.connect('http://localhost:9999');
+let socket = io.connect('http://192.168.1.13:9999');
+
+
 
 let pseudo = ''
 if (pseudo === '') {
@@ -6,6 +8,9 @@ if (pseudo === '') {
     pseudo = prompt('ton nom fdp ?');
 
 }
+
+
+
 
 let tabDesConnect = [];
 let header = document.querySelector('#header')
