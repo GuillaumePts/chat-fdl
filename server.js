@@ -402,11 +402,13 @@ io.on('connection', (socket) => {
 
     function messageries(pseudo) {
 
-
+console.log(pseudo);
         Room.find({
             user1: pseudo
         }, (err, rooms1) => {
             if (rooms1) {
+
+                let nbrNotif = 0
 
                 rooms1.forEach(room1 => {
                     Chat.findOne({
@@ -416,20 +418,39 @@ io.on('connection', (socket) => {
                             let x = 'pas de message avec ' + room1.user2
                             socket.emit('conversation', {
                                 msg: x,
-                                user: room1.user2
+                                user: room1.user2,
+                                nbr: 0
+
                             })
                         } else {
+
+
+                            notifs.forEach(notif => {
+                                if (notif.lereceiver === socket.pseudo && notif.lesender === room1.user2) {
+
+                                    nbrNotif++
+                                    console.log('ok');
+                                    
+
+                                }
+                            })
+
+
+
 
                             if (messages.content.length > 5000) {
 
                                 socket.emit('conversation', {
                                     msg: 'photo',
-                                    user: room1.user2
+                                    user: room1.user2,
+                                    nbr: nbrNotif
+
                                 })
                             } else {
                                 socket.emit('conversation', {
                                     msg: messages.content,
-                                    user: room1.user2
+                                    user: room1.user2,
+                                    nbr: nbrNotif
                                 })
                             }
                         }
@@ -447,6 +468,7 @@ io.on('connection', (socket) => {
         }, (err, rooms2) => {
             if (rooms2) {
 
+                let nbrNotif = 0
                 rooms2.forEach(room2 => {
 
                     Chat.findOne({
@@ -459,16 +481,33 @@ io.on('connection', (socket) => {
                                 user: room2.user1
                             })
                         } else {
+
+
+                                notifs.forEach(notif => {
+                                    if (notif.lereceiver === socket.pseudo && notif.lesender === room2.user1) {
+
+                                        nbrNotif++
+                                        console.log('ok');
+                                       
+
+                                    }
+                                })
+
+
+                           
+
                             if (messages.content.length > 5000) {
 
                                 socket.emit('conversation', {
                                     msg: 'photo',
-                                    user: room2.user1
+                                    user: room2.user1,
+                                    nbr: nbrNotif
                                 })
                             } else {
                                 socket.emit('conversation', {
                                     msg: messages.content,
-                                    user: room2.user1
+                                    user: room2.user1,
+                                    nbr: nbrNotif
                                 })
                             }
 

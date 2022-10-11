@@ -54,8 +54,8 @@ socket.on('namespace', (data) => {
 
     header.innerHTML = ''
 
-    let interloc =document.createElement('div')
-    interloc.id='interloc'
+    let interloc = document.createElement('div')
+    interloc.id = 'interloc'
     header.appendChild(interloc)
 
     let namespace = document.createElement('p')
@@ -87,7 +87,7 @@ socket.on('pasco', (nom) => {
 socket.on('messageView', (data) => {
 
     createElementFunction('autre', data)
-    
+
 })
 
 socket.on('oldMessagesMe', (messageSender, messageContent) => {
@@ -289,61 +289,90 @@ let cloche = document.querySelector('#cloche')
 
 cloche.addEventListener('click', () => {
 
-   cloche.style.display="none"
+    cloche.style.display = "none"
 
     socket.emit('messagerie', (pseudo))
-    
-   document.querySelector('#interloc').style.display="none"
-    
+
+    document.querySelector('#interloc').style.display = "none"
+
     let messagerie = document.createElement('div')
     messagerie.id = "messagerie"
     header.appendChild(messagerie)
 
-    let fermer =document.createElement('div')
-    fermer.id="fermer"
-    fermer.textContent="❌"
+    let fermer = document.createElement('div')
+    fermer.id = "fermer"
+    fermer.textContent = "❌"
     messagerie.appendChild(fermer)
 
     fermer.addEventListener('click', () => {
         header.removeChild(messagerie)
-        document.querySelector('#interloc').style.display="flex"
-        cloche.style.display="block"
+        document.querySelector('#interloc').style.display = "flex"
+        cloche.style.display = "block"
         socket.emit('resetNotifs')
 
     })
 })
 
-socket.on('conversation', (data)=>{
-    let messagerie = document.querySelector('#messagerie')
-    let conv = document.createElement('div')
-    conv.classList.add('conv')
+socket.on('conversation', (data) => {
 
-    conv.textContent=data.user+' : '+data.msg
-    conv.addEventListener('click', ()=>{
-        cloche.style.display="block"
-        _join(data.user)
-    })
-    messagerie.appendChild(conv)
-    
-    
+    if (data.nbr === 0) {
+
+
+        let messagerie = document.querySelector('#messagerie')
+        let conv = document.createElement('div')
+        conv.classList.add('conv')
+
+        conv.textContent = data.user + ' : ' + data.msg
+
+        conv.addEventListener('click', () => {
+            cloche.style.display = "block"
+            _join(data.user)
+        })
+        messagerie.appendChild(conv)
+
+
+    } else {
+        let messagerie = document.querySelector('#messagerie')
+        let conv = document.createElement('div')
+        conv.classList.add('conv')
+
+        conv.textContent = data.user + ' : ' + data.msg
+
+        let manotif = document.createElement('div')
+        manotif.classList.add("notif")
+        manotif.textContent = data.nbr
+        conv.appendChild(manotif)
+        conv.style.backgroundColor = "grey"
+
+        conv.addEventListener('click', () => {
+            cloche.style.display = "block"
+            _join(data.user)
+        })
+        messagerie.appendChild(conv)
+    }
+
+
+
+
+    console.log(data.user + ' notif = ' + data.nbr);
+
 })
 
-socket.on('nbrNotif', (data)=>{
+socket.on('nbrNotif', (data) => {
 
-    if(data ===0){
+    if (data === 0) {
 
         let notif = document.querySelector('#notif')
-        notif.style.display='none'
+        notif.style.display = 'none'
 
-        
-    }else{
+
+    } else {
         let notif = document.querySelector('#notif')
-        notif.style.display='block'
-        notif.textContent=data
+        notif.style.display = 'block'
+        notif.textContent = data
     }
 })
 
-socket.on('notifEnDirect', ()=>{
-   socket.emit('searchnotif')
+socket.on('notifEnDirect', () => {
+    socket.emit('searchnotif')
 })
-
