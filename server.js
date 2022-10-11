@@ -81,6 +81,7 @@ let io = require('socket.io')(server, {
 
 let connectedUsers = []
 let lesconnecte = []
+let notifEnDirects = []
 let notifs = []
 
 
@@ -107,12 +108,16 @@ io.on('connection', (socket) => {
 
             connectedUsers.push(socket);
             lesconnecte.push(socket.pseudo)
+            notifEnDirects.push({
+                pseudo: socket.pseudo,
+                id: socket.id
+            })
 
 
 
             searchNotifs()
 
-
+            console.log(notifs);
 
 
 
@@ -130,8 +135,7 @@ io.on('connection', (socket) => {
 
     socket.on('select', (nom) => {
 
-        console.log('bite');
-        console.log(nom);
+
 
         rechercheRoom(nom, socket.pseudo)
         socket.emit('namespace', nom)
@@ -175,8 +179,13 @@ io.on('connection', (socket) => {
             lereceiver: lereceiver
         })
 
+        notifEnDirects.forEach(leNotifié => {
+            if (leNotifié.pseudo === lereceiver) {
 
-      
+                io.to(leNotifié.id).emit('notifEnDirect')
+            }
+        })
+
 
         socket.broadcast.to(socket.room.name).emit('messageView', {
             message: message,
@@ -184,17 +193,15 @@ io.on('connection', (socket) => {
         })
 
 
-       io.emit('newMessage')
-        
+        console.log(socket.pseudo + ' : ' + notifs);
+
+
 
 
     })
 
-   
 
-    socket.on('searchLaNotif',()=>{
-        searchNotifs()
-    })
+
 
 
     socket.on('testimg', (src, lereceiver) => {
@@ -230,9 +237,18 @@ io.on('connection', (socket) => {
 
     })
 
-socket.on('resetNotifs', ()=>{
-    resetNotifs()
-})
+    socket.on('searchnotif', () => {
+        searchNotifs()
+
+    })
+
+    socket.on('resetNotifs', () => {
+
+        let newTabNotifs = notifs.filter((notif) => notif.lereceiver !== socket.pseudo)
+        notifs = newTabNotifs
+        
+        socket.emit('nbrNotif', 0)
+    })
 
 
 
@@ -276,7 +292,7 @@ socket.on('resetNotifs', ()=>{
         }, (err, messages) => {
 
             if (messages === null) {
-                console.log('pas de message');
+
             } else {
                 messages.forEach(message => {
 
@@ -412,7 +428,7 @@ socket.on('resetNotifs', ()=>{
                 })
 
             } else {
-                console.log("pas de conv");
+
             }
         })
 
@@ -423,38 +439,26 @@ socket.on('resetNotifs', ()=>{
     function searchNotifs() {
         let nbrNotif = 0
         if (notifs.length === 0) {
-            console.log('pas de nouveau message pour tous le monde');
+
         } else {
             notifs.forEach(notif => {
                 if (notif.lereceiver === socket.pseudo) {
 
                     nbrNotif++
 
-                    console.log('tu as reçu un message de ' + notif.lesender);
-                    
+
+
                 }
             })
-            console.log('tu as '+nbrNotif+' nouveaux messages');
-            socket.emit('nbrNotif' , nbrNotif)
+
+            socket.emit('nbrNotif', nbrNotif)
         }
     }
 
-    function resetNotifs(){
-        notifs.forEach(notif => {
-            if (notif.lereceiver === socket.pseudo) {
-                let index = notifs.indexOf(notif);
-               
-                    notifs.splice(index, 1)
-                   
-              
 
-                nbrNotif = 0
 
-                socket.emit('nbrNotif' , nbrNotif)
-                
-            }
-        })
-    }
+
+
 
 })
 

@@ -81,9 +81,6 @@ socket.on('pasco', (nom) => {
 
 
 
-socket.on('newMessage', ()=>{
-    socket.emit('searchLaNotif')
-})
 
 
 
@@ -344,5 +341,9 @@ socket.on('nbrNotif', (data)=>{
         notif.style.display='block'
         notif.textContent=data
     }
+})
+
+socket.on('notifEnDirect', ()=>{
+   socket.emit('searchnotif')
 })
 
