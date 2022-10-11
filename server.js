@@ -85,9 +85,11 @@ let notifEnDirects = []
 let notifs = []
 
 
-
+// CREATION DE LA SOCKET
 io.on('connection', (socket) => {
 
+
+    // CONNECTION
     socket.on('pseudo', (pseudo) => {
 
 
@@ -133,6 +135,7 @@ io.on('connection', (socket) => {
     let receiver = ''
 
 
+    // CHOIX DE LA CONVERSATION + LA REJOINDRE
     socket.on('select', (nom) => {
 
 
@@ -159,7 +162,7 @@ io.on('connection', (socket) => {
 
 
 
-
+    // ENVOIE DES MESSAGES
     socket.on('message', (message, lereceiver) => {
 
 
@@ -203,7 +206,7 @@ io.on('connection', (socket) => {
 
 
 
-
+    // ENVOI D'IMAGES
     socket.on('testimg', (src, lereceiver) => {
 
 
@@ -216,20 +219,39 @@ io.on('connection', (socket) => {
         chat.receiver = lereceiver;
         chat.save();
 
+        notifs.push({
+            lesender: socket.pseudo,
+            lereceiver: lereceiver
+        })
+
+        notifEnDirects.forEach(leNotifié => {
+            if (leNotifié.pseudo === lereceiver) {
+
+                io.to(leNotifié.id).emit('notifEnDirect')
+            }
+        })
+
+
 
 
         socket.broadcast.to(socket.room.name).emit('imageview', src)
     })
 
 
+
+    // QUAND QUELQU'UN ECRIT
     socket.on('writting', (pseudo) => {
         socket.broadcast.emit('writting', pseudo);
     })
 
+
+    // QUAND QUELQU'UN ARRETE D'ECRIRE
     socket.on('notWritting', () => {
         socket.broadcast.emit('notWritting');
     })
 
+
+    // QUAND LA PERSONNE OUVRE SA MESSAGERIE
     socket.on('messagerie', (data) => {
 
         // console.log('recherche toutes les salles ou figure '+data);
@@ -237,17 +259,17 @@ io.on('connection', (socket) => {
 
     })
 
+    // LANCEMENT DE LA RECHERCHE DE NOTIF
     socket.on('searchnotif', () => {
         searchNotifs()
 
     })
 
+
+    // SUPPRIME LES MESSAGES VUE DU TABLEAU DES NOTIFS
     socket.on('resetNotifs', () => {
 
-        let newTabNotifs = notifs.filter((notif) => notif.lereceiver !== socket.pseudo)
-        notifs = newTabNotifs
-        
-        socket.emit('nbrNotif', 0)
+        resetNotifs()
     })
 
 
@@ -267,9 +289,22 @@ io.on('connection', (socket) => {
 
     })
 
+
+
+
+
+
+
     //  FUNCTION 
 
 
+
+
+
+
+
+
+    // FUNCTION CREER UNE CONVERSATION 
     function creatRoom(lui, toi) {
         let room = new Room()
         room.name = lui + '/' + toi;
@@ -281,6 +316,11 @@ io.on('connection', (socket) => {
 
     }
 
+
+
+
+
+    // FUNCTION POUR REJOINDRE UNE CONVERSATION, RECUPERER LES ANCIENS MESSAGES
     function _joinRoom(room) {
         // socket.leaveAll();
         socket.join(room.name)
@@ -315,6 +355,12 @@ io.on('connection', (socket) => {
 
     }
 
+
+
+
+
+    // FUNCTION DETERMINE SI LA CONVERSATION EXISTE OU NON, SI NON ELLE LANCE LA FUNCTION QUI VA CREER LA CONVERSATION
+
     function rechercheRoom(lui, toi) {
 
         Room.findOne({
@@ -347,6 +393,12 @@ io.on('connection', (socket) => {
 
     }
 
+
+
+
+
+
+    // FUNCTION QUI VA CHERCHER LA LISTE DES CONVERSATIONS D'UNE PERSONNE ET LUI RETOURNER LE DERNIER MESSAGE AVEC LA X PERSONNE 
 
     function messageries(pseudo) {
 
@@ -436,6 +488,12 @@ io.on('connection', (socket) => {
 
 
 
+
+
+
+
+    // FUNCTION QUI VA VERIFIER SI LA PERSONNE A DES NOTIFICATIONS DE NOUVEAUX MESSAGES EN CHERCHANT DANS LE TABLEAU DES NOTIFS
+
     function searchNotifs() {
         let nbrNotif = 0
         if (notifs.length === 0) {
@@ -453,6 +511,20 @@ io.on('connection', (socket) => {
 
             socket.emit('nbrNotif', nbrNotif)
         }
+    }
+
+
+
+
+
+
+    // FUNCTION QUI SUPPRIME LES NOTIFICATION UNE FOIS VU PAR LA PERSONNE
+
+    function resetNotifs() {
+        let newTabNotifs = notifs.filter((notif) => notif.lereceiver !== socket.pseudo)
+        notifs = newTabNotifs
+
+        socket.emit('nbrNotif', 0)
     }
 
 
