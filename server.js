@@ -402,13 +402,12 @@ io.on('connection', (socket) => {
 
     function messageries(pseudo) {
 
-console.log(pseudo);
         Room.find({
             user1: pseudo
         }, (err, rooms1) => {
             if (rooms1) {
 
-                let nbrNotif = 0
+                
 
                 rooms1.forEach(room1 => {
                     Chat.findOne({
@@ -424,13 +423,14 @@ console.log(pseudo);
                             })
                         } else {
 
+                            let nbrNotif = 0
 
                             notifs.forEach(notif => {
                                 if (notif.lereceiver === socket.pseudo && notif.lesender === room1.user2) {
 
                                     nbrNotif++
-                                    console.log('ok');
-                                    
+                                    console.log('ok : ' + notif);
+
 
                                 }
                             })
@@ -468,7 +468,7 @@ console.log(pseudo);
         }, (err, rooms2) => {
             if (rooms2) {
 
-                let nbrNotif = 0
+                
                 rooms2.forEach(room2 => {
 
                     Chat.findOne({
@@ -478,23 +478,25 @@ console.log(pseudo);
                             let x = 'pas de message avec ' + room2.user1
                             socket.emit('conversation', {
                                 msg: x,
-                                user: room2.user1
+                                user: room2.user1,
+                                nbr: 0
                             })
                         } else {
 
+                            let nbrNotif = 0
 
-                                notifs.forEach(notif => {
-                                    if (notif.lereceiver === socket.pseudo && notif.lesender === room2.user1) {
+                            notifs.forEach(notif => {
+                                if (notif.lereceiver === socket.pseudo && notif.lesender === room2.user1) {
 
-                                        nbrNotif++
-                                        console.log('ok');
-                                       
-
-                                    }
-                                })
+                                    nbrNotif++
+                                    console.log('ok : ' + notif);
 
 
-                           
+                                }
+                            })
+
+
+
 
                             if (messages.content.length > 5000) {
 
@@ -517,8 +519,6 @@ console.log(pseudo);
                     })
 
                 })
-
-            } else {
 
             }
         })
