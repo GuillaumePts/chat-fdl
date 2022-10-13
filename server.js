@@ -119,7 +119,7 @@ io.on('connection', (socket) => {
 
             searchNotifs()
 
-            console.log(notifs);
+           
 
 
 
@@ -196,7 +196,7 @@ io.on('connection', (socket) => {
         })
 
 
-        console.log(socket.pseudo + ' : ' + notifs);
+        
 
 
 
@@ -323,7 +323,7 @@ io.on('connection', (socket) => {
     // FUNCTION POUR REJOINDRE UNE CONVERSATION, RECUPERER LES ANCIENS MESSAGES
     function _joinRoom(room) {
 
-        console.log(socket.pseudo + '  ' + room.user1 + '   ' + room.user2);
+        
       
         if (notifs.length === 0) {
 
@@ -575,7 +575,7 @@ io.on('connection', (socket) => {
 
         } else {
             notifs.forEach(notif => {
-                console.log(notif);
+                
                 if (notif.lereceiver === socket.pseudo) {
 
                     nbrNotif++

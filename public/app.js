@@ -156,6 +156,7 @@ function createElementFunction(element, content, content2) {
             messagemoi.classList.add('messagemoi');
             messagemoi.textContent = pseudo + ' : ' + content;
             newElement.appendChild(messagemoi)
+            leScroll()
 
             break;
 
@@ -167,6 +168,7 @@ function createElementFunction(element, content, content2) {
             messagemoi.classList.add('messageautre');
             messagemoi.textContent = content.pseudo + ' : ' + content.message;
             newElement.appendChild(messagemoi)
+            leScroll()
             break;
 
 
@@ -177,6 +179,7 @@ function createElementFunction(element, content, content2) {
             messagemoi.classList.add('messageautre');
             messagemoi.textContent = content + ' : ' + content2;
             newElement.appendChild(messagemoi)
+            leScroll()
 
             break;
 
@@ -187,6 +190,7 @@ function createElementFunction(element, content, content2) {
             messagemoi.classList.add('messagemoi');
             messagemoi.textContent = content + ' : ' + content2;
             newElement.appendChild(messagemoi)
+            leScroll()
             break;
 
         case 'imageautre':
@@ -198,6 +202,7 @@ function createElementFunction(element, content, content2) {
             imgview.src = content
 
             newElement.appendChild(imgview)
+            leScroll()
 
             break;
 
@@ -210,6 +215,7 @@ function createElementFunction(element, content, content2) {
             oldimgautre.src = content
 
             newElement.appendChild(oldimgautre)
+            leScroll()
 
             break;
 
@@ -222,6 +228,7 @@ function createElementFunction(element, content, content2) {
             oldimgme.src = content
 
             newElement.appendChild(oldimgme)
+            leScroll()
 
             break;
 
@@ -231,6 +238,16 @@ function createElementFunction(element, content, content2) {
 
 
 }
+
+function leScroll(){
+    document.querySelector('#msgcontent').scrollTop=10000000000
+}
+
+function notification(){
+    let audio =  new Audio('notif.mp3')
+    audio.play()
+     
+ }
 
 function _join(nom) {
 
@@ -378,8 +395,3 @@ socket.on('notifEnDirect', () => {
     notification()
 })
 
-function notification(){
-    let audio =  new Audio('notif.mp3')
-    audio.play()
-     
- }

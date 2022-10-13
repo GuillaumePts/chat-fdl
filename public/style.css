@@ -2,7 +2,7 @@
 
 :root{
 --color1-: #a3cea0;
---color2-: rgb(236, 238, 248);
+--color2-: rgba(236, 238, 248, 0);
 --msgmoi-: #a3cea0;
 --msgautre-: rgb(190, 188, 188);
 }
@@ -26,7 +26,7 @@ button{
 
 #liste-users{
     min-height: 200px;
-    width: 500px;
+    width: 100%;
     background-color: var(--color2-);
     border-radius: 20px;
     display: flex;
@@ -36,7 +36,7 @@ button{
 }
 #content {
     height: 700px;
-    width: 500px;
+    width: 100%;
     border-radius: 20px;
     background-color: var(--color2-);
     display: grid;
