@@ -267,10 +267,10 @@ io.on('connection', (socket) => {
 
 
     // SUPPRIME LES MESSAGES VUE DU TABLEAU DES NOTIFS
-    socket.on('resetNotifs', () => {
+    // socket.on('resetNotifs', () => {
 
-        resetNotifs()
-    })
+    //     resetNotifs()
+    // })
 
 
 
@@ -322,7 +322,41 @@ io.on('connection', (socket) => {
 
     // FUNCTION POUR REJOINDRE UNE CONVERSATION, RECUPERER LES ANCIENS MESSAGES
     function _joinRoom(room) {
-        // socket.leaveAll();
+
+        console.log(socket.pseudo + '  ' + room.user1 + '   ' + room.user2);
+      
+        if (notifs.length === 0) {
+
+           
+
+        } else {
+           
+
+           if (room.user1 === socket.pseudo){
+           
+          
+
+            resetNotifs(room.user2)
+
+            // console.log("la cible est : "+room.user2);
+
+           }else if(room.user2 === socket.pseudo){
+            
+
+
+            resetNotifs(room.user1)
+
+           
+            // console.log("la cible est : "+room.user1);
+           }else{
+            
+           }
+
+            
+        }
+
+        
+
         socket.join(room.name)
 
 
@@ -407,7 +441,7 @@ io.on('connection', (socket) => {
         }, (err, rooms1) => {
             if (rooms1) {
 
-                
+
 
                 rooms1.forEach(room1 => {
                     Chat.findOne({
@@ -429,7 +463,7 @@ io.on('connection', (socket) => {
                                 if (notif.lereceiver === socket.pseudo && notif.lesender === room1.user2) {
 
                                     nbrNotif++
-                                    console.log('ok : ' + notif);
+
 
 
                                 }
@@ -468,7 +502,7 @@ io.on('connection', (socket) => {
         }, (err, rooms2) => {
             if (rooms2) {
 
-                
+
                 rooms2.forEach(room2 => {
 
                     Chat.findOne({
@@ -489,7 +523,7 @@ io.on('connection', (socket) => {
                                 if (notif.lereceiver === socket.pseudo && notif.lesender === room2.user1) {
 
                                     nbrNotif++
-                                    console.log('ok : ' + notif);
+
 
 
                                 }
@@ -534,11 +568,14 @@ io.on('connection', (socket) => {
     // FUNCTION QUI VA VERIFIER SI LA PERSONNE A DES NOTIFICATIONS DE NOUVEAUX MESSAGES EN CHERCHANT DANS LE TABLEAU DES NOTIFS
 
     function searchNotifs() {
+        // let newTabNotif = notifs.filter(notif => notif.lesender !== undefined)
+        // notifs = newTabNotif
         let nbrNotif = 0
         if (notifs.length === 0) {
 
         } else {
             notifs.forEach(notif => {
+                console.log(notif);
                 if (notif.lereceiver === socket.pseudo) {
 
                     nbrNotif++
@@ -559,11 +596,24 @@ io.on('connection', (socket) => {
 
     // FUNCTION QUI SUPPRIME LES NOTIFICATION UNE FOIS VU PAR LA PERSONNE
 
-    function resetNotifs() {
-        let newTabNotifs = notifs.filter((notif) => notif.lereceiver !== socket.pseudo)
-        notifs = newTabNotifs
+    function resetNotifs(sender) {
+        
+        notifs.forEach(notif =>{
+            
+            if(notif.lesender === sender && notif.lereceiver === socket.pseudo){
+                delete notif.lesender
+                delete notif.lereceiver
 
-        socket.emit('nbrNotif', 0)
+               
+            }
+        })
+
+
+        
+        searchNotifs()
+
+        let newTabNotif = notifs.filter(notif => notif.lesender !== undefined)
+        notifs = newTabNotif
     }
 
 
