@@ -375,4 +375,11 @@ socket.on('nbrNotif', (data) => {
 
 socket.on('notifEnDirect', () => {
     socket.emit('searchnotif')
+    notification()
 })
+
+function notification(){
+    let audio =  new Audio('notif.mp3')
+    audio.play()
+     
+ }
