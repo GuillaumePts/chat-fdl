@@ -48,6 +48,10 @@ document.querySelector('#chatForm').addEventListener('submit', (e) => {
 })
 
 
+socket.on('voiciLesUsers', (users)=>{
+    voiciUsers(users)
+})
+
 
 
 socket.on('namespace', (data) => {
@@ -154,7 +158,7 @@ function createElementFunction(element, content, content2) {
             newElement.classList.add(element, 'message');
             document.querySelector('#msgcontent').appendChild(newElement);
             messagemoi.classList.add('messagemoi');
-            messagemoi.textContent = pseudo + ' : ' + content;
+            messagemoi.textContent = content;
             newElement.appendChild(messagemoi)
             leScroll()
 
@@ -188,7 +192,7 @@ function createElementFunction(element, content, content2) {
 
             document.getElementById('msgcontent').appendChild(newElement);
             messagemoi.classList.add('messagemoi');
-            messagemoi.textContent = content + ' : ' + content2;
+            messagemoi.textContent = content2;
             newElement.appendChild(messagemoi)
             leScroll()
             break;
@@ -299,12 +303,76 @@ function handleFiles(files) {
     }
 }
 
+
+function listeUsers(){
+    
+    socket.emit('vaChercherLesUsers')
+
+}
+
+function voiciUsers(users){
+     let header= document.querySelector('#header')
+    //  document.querySelector('#interloc').style.display = "none"
+     document.querySelector('#cloche').style.display = "none"
+     document.querySelector('#lesUsers').style.display = "none"
+     let conteneur = document.createElement('div')
+     header.appendChild(conteneur)
+     conteneur.id= 'user'
+     let fermer = document.createElement('div')
+     fermer.id = "fermer"
+     fermer.textContent = "❌"
+     conteneur.appendChild(fermer)
+
+     fermer.addEventListener('click', () => {
+        header.removeChild(conteneur)
+        // document.querySelector('#interloc').style.display = "flex"
+        document.querySelector('#cloche').style.display = "block"
+        document.querySelector('#lesUsers').style.display = "block"
+       
+       
+
+    })
+
+     
+
+    users.forEach(user => {
+
+        console.log(user);
+
+        if(user.pseudo === null){
+            // rien
+        }else if(user.pseudo === undefined){
+            // rien
+        }else if(user.pseudo === pseudo){
+            // rien
+        }else{
+           
+            let leuser =document.createElement('div')
+            leuser.classList.add('user')
+            leuser.textContent=user.pseudo
+            leuser.addEventListener('click', ()=>{
+
+
+                _join(user.pseudo)
+                header.removeChild(conteneur)
+                // document.querySelector('#interloc').style.display = "flex"
+                document.querySelector('#cloche').style.display = "block"
+                document.querySelector('#lesUsers').style.display = "block"
+            })
+            conteneur.appendChild(leuser)
+        }
+        
+    });
+}
+
 // PARTIE NOTIF ? LISTE DES CONVS ------------------------------------//
 
 let cloche = document.querySelector('#cloche')
 
 
 cloche.addEventListener('click', () => {
+
+    document.querySelector('#lesUsers').style.display = "none"
 
     cloche.style.display = "none"
 
@@ -325,6 +393,7 @@ cloche.addEventListener('click', () => {
         header.removeChild(messagerie)
         document.querySelector('#interloc').style.display = "flex"
         cloche.style.display = "block"
+        document.querySelector('#lesUsers').style.display = "block"
         socket.emit('resetNotifs')
 
     })

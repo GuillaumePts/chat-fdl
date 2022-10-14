@@ -16,18 +16,15 @@
 
    
 
-    <div id="liste-users">
-        <h1>liste user</h1>
-        <% users.forEach(user => { %>
-        <button onclick="_join('<%= user.pseudo %>')" ><%= user.pseudo %></button>
-        <% });%>
-
-
-    </div>
+   
     <div id="content">
 
         <div id="cloche">🔔
             <div id="notif"></div>
+        </div>
+
+        <div id="lesUsers" onclick="listeUsers()">
+            👤
         </div>
 
         <div id="header">
@@ -41,7 +38,9 @@
 
         <div id="footer">
             <form method="post" id="chatForm">
-                <input type="text" id="msgInput" autofocus onkeypress="writting()" onblur="notWritting()" />
+                <input type="text" placeholder="   ..." id="msgInput"  onkeypress="writting()" onblur="notWritting()" />
+
+                <label for="upload" id="envoiphoto">📷</label>
                 <input style="width: 20px;" type="file" onchange="handleFiles(files)" id="upload" multiple
                     name="file" />
 

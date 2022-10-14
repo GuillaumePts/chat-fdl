@@ -129,6 +129,9 @@ io.on('connection', (socket) => {
     })
 
 
+    socket.on('vaChercherLesUsers', () =>{
+        searchUsers()
+    })
 
 
 
@@ -618,6 +621,14 @@ io.on('connection', (socket) => {
 
 
 
+
+    function searchUsers(){
+
+        User.find((err,users)=>{
+            // console.log(users);
+            socket.emit('voiciLesUsers', users)
+        })
+    }
 
 
 
