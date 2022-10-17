@@ -277,7 +277,9 @@ function handleFiles(files) {
             img.classList.add('img')
             newElement.appendChild(img)
 
-
+            img.addEventListener('click', ()=>{
+                voirImage()
+            })
 
 
             img.file = file;
@@ -301,6 +303,24 @@ function handleFiles(files) {
         }
 
     }
+}
+
+
+function voirImage(image){
+
+    console.log('click');
+    let fond =document.createElement('div')
+    fond.id='fondImage'
+    document.querySelector('#content').appendChild(fond)
+
+    let croix = document.createElement('div')
+    croix.id='fermer'
+    croix.textContent="BITE!"
+    fond.appendChild(croix)
+
+    croix.addEventListener('click', ()=>{
+        fond.remove()
+    })
 }
 
 
@@ -364,6 +384,12 @@ function voiciUsers(users){
         
     });
 }
+
+
+
+
+
+
 
 // PARTIE NOTIF ? LISTE DES CONVS ------------------------------------//
 
