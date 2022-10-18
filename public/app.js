@@ -206,6 +206,11 @@ function createElementFunction(element, content, content2) {
             imgview.src = content
 
             newElement.appendChild(imgview)
+
+            imgview.addEventListener('click', ()=>{
+                voirImage(imgview.src)
+                
+            })
             leScroll()
 
             break;
@@ -219,6 +224,12 @@ function createElementFunction(element, content, content2) {
             oldimgautre.src = content
 
             newElement.appendChild(oldimgautre)
+
+            oldimgautre.addEventListener('click', ()=>{
+                voirImage(oldimgautre.src)
+                
+            })
+
             leScroll()
 
             break;
@@ -230,6 +241,11 @@ function createElementFunction(element, content, content2) {
             let oldimgme = document.createElement('img')
             oldimgme.classList.add('img')
             oldimgme.src = content
+
+            oldimgme.addEventListener('click', ()=>{
+                voirImage(oldimgme.src)
+                
+            })
 
             newElement.appendChild(oldimgme)
             leScroll()
@@ -279,6 +295,7 @@ function handleFiles(files) {
 
             img.addEventListener('click', ()=>{
                 voirImage()
+                console.log(img.src);
             })
 
 
@@ -306,7 +323,7 @@ function handleFiles(files) {
 }
 
 
-function voirImage(image){
+function voirImage(src){
 
     console.log('click');
     let fond =document.createElement('div')
@@ -315,8 +332,17 @@ function voirImage(image){
 
     let croix = document.createElement('div')
     croix.id='fermer'
-    croix.textContent="BITE!"
+    croix.textContent="❌"
+    croix.style.position="absolute"
+    croix.style.top=0
     fond.appendChild(croix)
+
+    let img = document.createElement('img')
+    img.src = src
+    img.style.width= "96%"
+    
+    
+    fond.appendChild(img)
 
     croix.addEventListener('click', ()=>{
         fond.remove()

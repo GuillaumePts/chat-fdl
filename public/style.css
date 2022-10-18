@@ -155,7 +155,7 @@ padding: 5px;
     height: 10px;
     width: 10px;
     border-radius: 50%;
-    background-color: rgb(70, 70, 245);
+    background-color: rgb(38, 228, 0);
   
 }
 
@@ -259,9 +259,13 @@ padding: 5px;
 
     height: 100vh;
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.616);
+    background-color: rgba(0, 0, 0, 0.696);
     z-index: 2;
     position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 
