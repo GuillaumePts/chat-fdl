@@ -168,6 +168,23 @@ io.on('connection', (socket) => {
     // ENVOIE DES MESSAGES
     socket.on('message', (message, lereceiver) => {
 
+        let d = new Date()
+        let jour = d.getDate()
+        let mois= d.getMonth()
+        let annee = d.getFullYear()
+    
+        let heure = d.getHours()
+
+        if(heure <= 9){
+            heure = '0'+d.getHours()
+        }
+
+        let minute = d.getMinutes()
+
+        if(minute <= 9){
+            minute = '0'+d.getMinutes()
+        }
+    
 
         lereceiver = receiver
 
@@ -176,6 +193,14 @@ io.on('connection', (socket) => {
         chat.content = message;
         chat.sender = socket.pseudo;
         chat.receiver = lereceiver;
+
+        if(mois <= 9){
+           
+            chat.date = jour+'/'+'0'+mois+'/'+annee+'   '+heure+':'+minute;
+        }else{
+            chat.date = jour+'/'+mois+'/'+annee+'   '+heure+':'+minute;
+        }
+       
         chat.save();
 
 
@@ -183,6 +208,7 @@ io.on('connection', (socket) => {
         notifs.push({
             lesender: socket.pseudo,
             lereceiver: lereceiver
+            
         })
 
         notifEnDirects.forEach(leNotifié => {
@@ -195,7 +221,8 @@ io.on('connection', (socket) => {
 
         socket.broadcast.to(socket.room.name).emit('messageView', {
             message: message,
-            pseudo: socket.pseudo
+            pseudo: socket.pseudo,
+            date: chat.date
         })
 
 
@@ -374,10 +401,10 @@ io.on('connection', (socket) => {
                 messages.forEach(message => {
 
                     if (message.sender === socket.pseudo) {
-                        socket.emit('oldMessagesMe', message.sender, message.content)
+                        socket.emit('oldMessagesMe', message.sender, message.content, message.date)
 
                     } else {
-                        socket.emit('oldMessages', message.sender, message.content)
+                        socket.emit('oldMessages', message.sender, message.content, message.date)
 
                     }
 

@@ -6,7 +6,8 @@ let chatSchema = new mongoose.Schema({
    },
    sender:String,
    receiver: String,
-   content: String
+   content: String,
+   date: String,
 })
 
 mongoose.model('chat', chatSchema);

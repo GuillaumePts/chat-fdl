@@ -94,7 +94,7 @@ socket.on('messageView', (data) => {
 
 })
 
-socket.on('oldMessagesMe', (messageSender, messageContent) => {
+socket.on('oldMessagesMe', (messageSender, messageContent, messageDate) => {
 
     if (messageContent.length > 8000) {
 
@@ -102,14 +102,14 @@ socket.on('oldMessagesMe', (messageSender, messageContent) => {
 
     } else {
 
-        createElementFunction('oldMessagesMe', messageSender, messageContent)
+        createElementFunction('oldMessagesMe', messageSender, messageContent, messageDate)
 
     }
 
 
 })
 
-socket.on('oldMessages', (messageSender, messageContent) => {
+socket.on('oldMessages', (messageSender, messageContent, messageDate) => {
 
     if (messageContent.length > 8000) {
 
@@ -117,7 +117,7 @@ socket.on('oldMessages', (messageSender, messageContent) => {
 
     } else {
 
-        createElementFunction('oldMessages', messageSender, messageContent)
+        createElementFunction('oldMessages', messageSender, messageContent, messageDate)
 
     }
 
@@ -149,9 +149,10 @@ function notWritting() {
 }
 
 
-function createElementFunction(element, content, content2) {
+function createElementFunction(element, content, content2, date) {
     let newElement = document.createElement('div');
     let messagemoi = document.createElement('p');
+    let info = document.createElement('div')
 
     switch (element) {
         case 'moi':
@@ -172,6 +173,11 @@ function createElementFunction(element, content, content2) {
             messagemoi.classList.add('messageautre');
             messagemoi.textContent = content.pseudo + ' : ' + content.message;
             newElement.appendChild(messagemoi)
+
+            messagemoi.addEventListener('click', ()=>{
+                // madate(content.date)
+                console.log(content.date);
+            })
             leScroll()
             break;
 
@@ -183,6 +189,20 @@ function createElementFunction(element, content, content2) {
             messagemoi.classList.add('messageautre');
             messagemoi.textContent = content + ' : ' + content2;
             newElement.appendChild(messagemoi)
+           
+            info.textContent = date
+            info.classList.add('infoautre')
+            
+            newElement.appendChild(info)
+
+            messagemoi.addEventListener('click', ()=>{
+                // madate(content.date)
+                info.style.display="flex"
+              
+                info.addEventListener('click', ()=>{
+                    info.style.display="none"
+                })
+            })
             leScroll()
 
             break;
@@ -194,6 +214,22 @@ function createElementFunction(element, content, content2) {
             messagemoi.classList.add('messagemoi');
             messagemoi.textContent = content2;
             newElement.appendChild(messagemoi)
+            
+            info.textContent = date
+            info.classList.add('infomoi')
+            
+            newElement.appendChild(info)
+
+            
+            messagemoi.addEventListener('click', ()=>{
+                // madate(content.date)
+                // console.log(date);
+                info.style.display="flex"
+               
+                info.addEventListener('click', ()=>{
+                    info.style.display="none"
+                })
+            })
             leScroll()
             break;
 
@@ -515,4 +551,13 @@ socket.on('notifEnDirect', () => {
     socket.emit('searchnotif')
     notification()
 })
+
+
+
+
+
+
+// INFORMATION MESSAGE
+
+
 
