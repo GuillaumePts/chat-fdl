@@ -26,9 +26,11 @@ try {
 require('./models/user.model');
 require('./models/room.model');
 require('./models/chat.model');
+require('./models/image.model');
 let User = mongoose.model('user');
 let Room = mongoose.model('room');
 let Chat = mongoose.model('chat');
+let Image = mongoose.model('image');
 
 
 app.use(express.static(__dirname + '/public'));
@@ -119,7 +121,7 @@ io.on('connection', (socket) => {
 
             searchNotifs()
 
-           
+
 
 
 
@@ -129,7 +131,7 @@ io.on('connection', (socket) => {
     })
 
 
-    socket.on('vaChercherLesUsers', () =>{
+    socket.on('vaChercherLesUsers', () => {
         searchUsers()
     })
 
@@ -170,21 +172,21 @@ io.on('connection', (socket) => {
 
         let d = new Date()
         let jour = d.getDate()
-        let mois= d.getMonth()
+        let mois = d.getMonth()
         let annee = d.getFullYear()
-    
+
         let heure = d.getHours()
 
-        if(heure <= 9){
-            heure = '0'+d.getHours()
+        if (heure <= 9) {
+            heure = '0' + d.getHours()
         }
 
         let minute = d.getMinutes()
 
-        if(minute <= 9){
-            minute = '0'+d.getMinutes()
+        if (minute <= 9) {
+            minute = '0' + d.getMinutes()
         }
-    
+
 
         lereceiver = receiver
 
@@ -193,14 +195,15 @@ io.on('connection', (socket) => {
         chat.content = message;
         chat.sender = socket.pseudo;
         chat.receiver = lereceiver;
+        chat.createdAt = new Date()
 
-        if(mois <= 9){
-           
-            chat.date = jour+'/'+'0'+mois+'/'+annee+'   '+heure+':'+minute;
-        }else{
-            chat.date = jour+'/'+mois+'/'+annee+'   '+heure+':'+minute;
+        if (mois <= 9) {
+
+            chat.date = jour + '/' + '0' + mois + '/' + annee + '   ' + heure + ':' + minute;
+        } else {
+            chat.date = jour + '/' + mois + '/' + annee + '   ' + heure + ':' + minute;
         }
-       
+
         chat.save();
 
 
@@ -208,7 +211,7 @@ io.on('connection', (socket) => {
         notifs.push({
             lesender: socket.pseudo,
             lereceiver: lereceiver
-            
+
         })
 
         notifEnDirects.forEach(leNotifié => {
@@ -226,7 +229,7 @@ io.on('connection', (socket) => {
         })
 
 
-        
+
 
 
 
@@ -237,14 +240,25 @@ io.on('connection', (socket) => {
 
 
     // ENVOI D'IMAGES
-    socket.on('testimg', (src, lereceiver) => {
+    socket.on('testimg', (src) => {
+        let lereceiver = receiver
+
+        let image = new Image();
+        image.id_room = socket.room.name;
+        image.content = src;
+        image.sender = socket.pseudo;
+        image.receiver = lereceiver;
+        image.save();
 
 
-        lereceiver = receiver
+
+
+
 
         let chat = new Chat();
         chat.id_room = socket.room.name;
-        chat.content = src;
+        chat.content = '▶Photo';
+        chat.img = image.id;
         chat.sender = socket.pseudo;
         chat.receiver = lereceiver;
         chat.save();
@@ -353,39 +367,39 @@ io.on('connection', (socket) => {
     // FUNCTION POUR REJOINDRE UNE CONVERSATION, RECUPERER LES ANCIENS MESSAGES
     function _joinRoom(room) {
 
-        
-      
+
+
         if (notifs.length === 0) {
 
-           
+
 
         } else {
-           
-
-           if (room.user1 === socket.pseudo){
-           
-          
-
-            resetNotifs(room.user2)
-
-            // console.log("la cible est : "+room.user2);
-
-           }else if(room.user2 === socket.pseudo){
-            
 
 
-            resetNotifs(room.user1)
+            if (room.user1 === socket.pseudo) {
 
-           
-            // console.log("la cible est : "+room.user1);
-           }else{
-            
-           }
 
-            
+
+                resetNotifs(room.user2)
+
+                // console.log("la cible est : "+room.user2);
+
+            } else if (room.user2 === socket.pseudo) {
+
+
+
+                resetNotifs(room.user1)
+
+
+                // console.log("la cible est : "+room.user1);
+            } else {
+
+            }
+
+
         }
 
-        
+
 
         socket.join(room.name)
 
@@ -399,20 +413,45 @@ io.on('connection', (socket) => {
 
             } else {
                 messages.forEach(message => {
+                    console.log(message);
 
-                    if (message.sender === socket.pseudo) {
-                        socket.emit('oldMessagesMe', message.sender, message.content, message.date)
+                    if (message.img === undefined) {
+                        if (message.sender === socket.pseudo) {
+                            socket.emit('oldMessagesMe', {
+                                content: message.content,
+                                date: message.date,
+                                sender: message.sender
+                            })
 
+                        } else {
+                            socket.emit('oldMessages', {
+                                content: message.content,
+                                date: message.date,
+                                sender: message.sender
+                            })
+
+                        }
+                        
                     } else {
-                        socket.emit('oldMessages', message.sender, message.content, message.date)
+                        Image.findOne({
+                            _id: message.img
+                        }, (err, limage) => {
 
+                            if (limage.sender === socket.pseudo) {
+                                socket.emit('oldimgme', limage.content)
+
+                            } else {
+                                socket.emit('oldimgautre', limage.content)
+
+                            }
+                        })
                     }
 
                 });
             }
 
 
-        })
+        }).sort({createdAt: 'asc'})
 
 
 
@@ -605,7 +644,7 @@ io.on('connection', (socket) => {
 
         } else {
             notifs.forEach(notif => {
-                
+
                 if (notif.lereceiver === socket.pseudo) {
 
                     nbrNotif++
@@ -627,19 +666,19 @@ io.on('connection', (socket) => {
     // FUNCTION QUI SUPPRIME LES NOTIFICATION UNE FOIS VU PAR LA PERSONNE
 
     function resetNotifs(sender) {
-        
-        notifs.forEach(notif =>{
-            
-            if(notif.lesender === sender && notif.lereceiver === socket.pseudo){
+
+        notifs.forEach(notif => {
+
+            if (notif.lesender === sender && notif.lereceiver === socket.pseudo) {
                 delete notif.lesender
                 delete notif.lereceiver
 
-               
+
             }
         })
 
 
-        
+
         searchNotifs()
 
         let newTabNotif = notifs.filter(notif => notif.lesender !== undefined)
@@ -649,9 +688,9 @@ io.on('connection', (socket) => {
 
 
 
-    function searchUsers(){
+    function searchUsers() {
 
-        User.find((err,users)=>{
+        User.find((err, users) => {
             // console.log(users);
             socket.emit('voiciLesUsers', users)
         })

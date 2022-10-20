@@ -48,7 +48,7 @@ document.querySelector('#chatForm').addEventListener('submit', (e) => {
 })
 
 
-socket.on('voiciLesUsers', (users)=>{
+socket.on('voiciLesUsers', (users) => {
     voiciUsers(users)
 })
 
@@ -94,40 +94,31 @@ socket.on('messageView', (data) => {
 
 })
 
-socket.on('oldMessagesMe', (messageSender, messageContent, messageDate) => {
+socket.on('oldMessagesMe', (message) => {
 
-    if (messageContent.length > 8000) {
-
-        createElementFunction('oldimgme', messageContent)
-
-    } else {
-
-        createElementFunction('oldMessagesMe', messageSender, messageContent, messageDate)
-
-    }
-
+         createElementFunction('oldMessagesMe', message)
+        // console.log(message);
 
 })
 
-socket.on('oldMessages', (messageSender, messageContent, messageDate) => {
+socket.on('oldMessages', (message) => {
 
-    if (messageContent.length > 8000) {
+         createElementFunction('oldMessages', message)
+        // console.log(message);
 
-        createElementFunction('oldimgautre', messageContent)
+})
 
-    } else {
+socket.on('oldimgautre', (src)=>{
+    createElementFunction('oldimgautre', src)
+})
 
-        createElementFunction('oldMessages', messageSender, messageContent, messageDate)
-
-    }
-
-
+socket.on('oldimgme', (src)=>{
+createElementFunction('oldimgme',src)
 })
 
 socket.on('imageview', (src) => {
-
-
-    createElementFunction('imageautre', src)
+    
+     createElementFunction('imageautre', src)
 
 })
 
@@ -149,7 +140,7 @@ function notWritting() {
 }
 
 
-function createElementFunction(element, content, content2, date) {
+function createElementFunction(element, content) {
     let newElement = document.createElement('div');
     let messagemoi = document.createElement('p');
     let info = document.createElement('div')
@@ -174,7 +165,7 @@ function createElementFunction(element, content, content2, date) {
             messagemoi.textContent = content.pseudo + ' : ' + content.message;
             newElement.appendChild(messagemoi)
 
-            messagemoi.addEventListener('click', ()=>{
+            messagemoi.addEventListener('click', () => {
                 // madate(content.date)
                 console.log(content.date);
             })
@@ -187,20 +178,20 @@ function createElementFunction(element, content, content2, date) {
 
             document.getElementById('msgcontent').appendChild(newElement);
             messagemoi.classList.add('messageautre');
-            messagemoi.textContent = content + ' : ' + content2;
+            messagemoi.textContent = content.sender + ' : ' + content.content;
             newElement.appendChild(messagemoi)
-           
-            info.textContent = date
+
+            info.textContent = content.date
             info.classList.add('infoautre')
-            
+
             newElement.appendChild(info)
 
-            messagemoi.addEventListener('click', ()=>{
+            messagemoi.addEventListener('click', () => {
                 // madate(content.date)
-                info.style.display="flex"
-              
-                info.addEventListener('click', ()=>{
-                    info.style.display="none"
+                info.style.display = "flex"
+
+                info.addEventListener('click', () => {
+                    info.style.display = "none"
                 })
             })
             leScroll()
@@ -212,22 +203,22 @@ function createElementFunction(element, content, content2, date) {
 
             document.getElementById('msgcontent').appendChild(newElement);
             messagemoi.classList.add('messagemoi');
-            messagemoi.textContent = content2;
+            messagemoi.textContent = content.content;
             newElement.appendChild(messagemoi)
-            
-            info.textContent = date
+
+            info.textContent = content.date
             info.classList.add('infomoi')
-            
+
             newElement.appendChild(info)
 
-            
-            messagemoi.addEventListener('click', ()=>{
+
+            messagemoi.addEventListener('click', () => {
                 // madate(content.date)
                 // console.log(date);
-                info.style.display="flex"
-               
-                info.addEventListener('click', ()=>{
-                    info.style.display="none"
+                info.style.display = "flex"
+
+                info.addEventListener('click', () => {
+                    info.style.display = "none"
                 })
             })
             leScroll()
@@ -243,9 +234,9 @@ function createElementFunction(element, content, content2, date) {
 
             newElement.appendChild(imgview)
 
-            imgview.addEventListener('click', ()=>{
+            imgview.addEventListener('click', () => {
                 voirImage(imgview.src)
-                
+
             })
             leScroll()
 
@@ -254,17 +245,25 @@ function createElementFunction(element, content, content2, date) {
         case 'oldimgautre':
             newElement.classList.add('autre', 'message');
             document.getElementById('msgcontent').appendChild(newElement);
+            
+           
+           
 
-            let oldimgautre = document.createElement('img')
-            oldimgautre.classList.add('img')
-            oldimgautre.src = content
 
-            newElement.appendChild(oldimgautre)
+                let oldimgautre = document.createElement('img')
+                oldimgautre.classList.add('img')
+                oldimgautre.src = content
 
-            oldimgautre.addEventListener('click', ()=>{
-                voirImage(oldimgautre.src)
-                
-            })
+                newElement.appendChild(oldimgautre)
+
+                oldimgautre.addEventListener('click', () => {
+                    voirImage(oldimgautre.src)
+
+                })
+           
+
+
+
 
             leScroll()
 
@@ -274,16 +273,20 @@ function createElementFunction(element, content, content2, date) {
             newElement.classList.add('moi', 'message');
             document.getElementById('msgcontent').appendChild(newElement);
 
-            let oldimgme = document.createElement('img')
-            oldimgme.classList.add('img')
-            oldimgme.src = content
+          
 
-            oldimgme.addEventListener('click', ()=>{
-                voirImage(oldimgme.src)
-                
-            })
 
-            newElement.appendChild(oldimgme)
+                let oldimgme = document.createElement('img')
+                oldimgme.classList.add('img')
+                oldimgme.src = content
+
+                newElement.appendChild(oldimgme)
+
+                oldimgme.addEventListener('click', () => {
+                    voirImage(oldimgme.src)
+
+                })
+            
             leScroll()
 
             break;
@@ -295,15 +298,15 @@ function createElementFunction(element, content, content2, date) {
 
 }
 
-function leScroll(){
-    document.querySelector('#msgcontent').scrollTop=10000000000
+function leScroll() {
+    document.querySelector('#msgcontent').scrollTop = 10000000000
 }
 
-function notification(){
-    let audio =  new Audio('notif.mp3')
+function notification() {
+    let audio = new Audio('notif.mp3')
     audio.play()
-     
- }
+
+}
 
 function _join(nom) {
 
@@ -329,13 +332,14 @@ function handleFiles(files) {
             img.classList.add('img')
             newElement.appendChild(img)
 
-            img.addEventListener('click', ()=>{
+            img.addEventListener('click', () => {
                 voirImage()
                 console.log(img.src);
             })
 
 
             img.file = file;
+        
 
             let reader = new FileReader();
 
@@ -356,83 +360,90 @@ function handleFiles(files) {
         }
 
     }
+
 }
 
 
-function voirImage(src){
+// function cUneImage(files){
+
+//     socket.emit('testimg', files)
+// }
+
+
+function voirImage(src) {
 
     console.log('click');
-    let fond =document.createElement('div')
-    fond.id='fondImage'
+    let fond = document.createElement('div')
+    fond.id = 'fondImage'
     document.querySelector('#content').appendChild(fond)
 
     let croix = document.createElement('div')
-    croix.id='fermer'
-    croix.textContent="❌"
-    croix.style.position="absolute"
-    croix.style.top=0
+    croix.id = 'fermer'
+    croix.textContent = "❌"
+    croix.style.position = "absolute"
+    croix.style.top = 0
     fond.appendChild(croix)
 
     let img = document.createElement('img')
     img.src = src
-    img.style.width= "96%"
-    
-    
+    img.style.width = "96%"
+
+
     fond.appendChild(img)
 
-    croix.addEventListener('click', ()=>{
+    croix.addEventListener('click', () => {
         fond.remove()
     })
 }
 
 
-function listeUsers(){
-    
+function listeUsers() {
+
     socket.emit('vaChercherLesUsers')
 
 }
 
-function voiciUsers(users){
-     let header= document.querySelector('#header')
+function voiciUsers(users) {
+    let header = document.querySelector('#header')
     //  document.querySelector('#interloc').style.display = "none"
-     document.querySelector('#cloche').style.display = "none"
-     document.querySelector('#lesUsers').style.display = "none"
-     let conteneur = document.createElement('div')
-     header.appendChild(conteneur)
-     conteneur.id= 'user'
-     let fermer = document.createElement('div')
-     fermer.id = "fermer"
-     fermer.textContent = "❌"
-     conteneur.appendChild(fermer)
+    document.querySelector('#cloche').style.display = "none"
+    document.querySelector('#lesUsers').style.display = "none"
+    let conteneur = document.createElement('div')
+    header.appendChild(conteneur)
+    conteneur.id = 'user'
+    let fermer = document.createElement('div')
+    fermer.id = "fermer"
+    fermer.textContent = "❌"
+    conteneur.appendChild(fermer)
 
-     fermer.addEventListener('click', () => {
+    fermer.addEventListener('click', () => {
         header.removeChild(conteneur)
         // document.querySelector('#interloc').style.display = "flex"
         document.querySelector('#cloche').style.display = "block"
         document.querySelector('#lesUsers').style.display = "block"
-       
-       
+
+
 
     })
 
-     
+
 
     users.forEach(user => {
 
         console.log(user);
 
-        if(user.pseudo === null){
+        if (user.pseudo === null) {
             // rien
-        }else if(user.pseudo === undefined){
+        } else if (user.pseudo === undefined) {
             // rien
-        }else if(user.pseudo === pseudo){
+        } else if (user.pseudo === pseudo) {
             // rien
-        }else{
-           
-            let leuser =document.createElement('div')
+        } else {
+
+            let leuser = document.createElement('div')
             leuser.classList.add('user')
-            leuser.textContent=user.pseudo
-            leuser.addEventListener('click', ()=>{
+            leuser.textContent = user.pseudo
+            leuser.addEventListener('click', () => {
 
 
                 _join(user.pseudo)
@@ -443,7 +454,7 @@ function voiciUsers(users){
             })
             conteneur.appendChild(leuser)
         }
-        
+
     });
 }
 
@@ -558,6 +569,3 @@ socket.on('notifEnDirect', () => {
 
 
 // INFORMATION MESSAGE
-
-
-
