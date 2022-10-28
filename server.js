@@ -1,13 +1,19 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose')
-const server = require('http').createServer(app);
-// const fs = require('fs')
+const  https = require('https');
+const fs = require('fs');
+
+const server = https.createServer({ 
+    key: fs.readFileSync('server.key'),
+    cert: fs.readFileSync('server.cert') 
+ }, app);
 
 
-const ObjectId = mongoose.Types.ObjectId;
+// const ObjectId = mongoose.Types.ObjectId;
 
 const mdp = require('./env');
+// const { json } = require('express');
 
 
 try {
@@ -80,6 +86,8 @@ app.use(function (req, res, next) {
 let io = require('socket.io')(server, {
     maxHttpBufferSize: 1e8
 });
+
+// const io = new Server(https);
 
 let connectedUsers = []
 let lesconnecte = []
@@ -281,6 +289,41 @@ io.on('connection', (socket) => {
         socket.broadcast.to(socket.room.name).emit('imageview', src)
     })
 
+    socket.on("upload", (file) => {
+        
+
+        
+
+        let obj = {
+            url : file
+        }
+
+        let string = JSON.stringify(obj)
+
+
+        fs.appendFile("public/upload/image.json", string, (err)=>{
+
+            if(err){
+                console.log(err);
+            }
+        })
+        
+
+    });
+     
+
+    socket.on('searchImage', (id)=>{
+        Image.findOne({
+            _id : id
+        },(err, photo)=>{
+            socket.emit('afficheImage', {
+                name : id,
+                src: photo.content,
+                sender: photo.sender,
+            })
+        })
+    })
+
 
 
     // QUAND QUELQU'UN ECRIT
@@ -413,45 +456,49 @@ io.on('connection', (socket) => {
 
             } else {
                 messages.forEach(message => {
-                    console.log(message);
+                   
 
-                    if (message.img === undefined) {
+            
+
+                    // if (message.img === undefined) {
                         if (message.sender === socket.pseudo) {
                             socket.emit('oldMessagesMe', {
                                 content: message.content,
                                 date: message.date,
-                                sender: message.sender
+                                sender: message.sender,
+                                img: message.img
                             })
 
                         } else {
                             socket.emit('oldMessages', {
                                 content: message.content,
                                 date: message.date,
-                                sender: message.sender
+                                sender: message.sender,
+                                img: message.img
                             })
 
                         }
                         
-                    } else {
-                        Image.findOne({
-                            _id: message.img
-                        }, (err, limage) => {
+                    // } else {
+                    //     Image.findOne({
+                    //         _id: message.img
+                    //     }, (err, limage) => {
 
-                            if (limage.sender === socket.pseudo) {
-                                socket.emit('oldimgme', limage.content)
+                    //         if (limage.sender === socket.pseudo) {
+                    //             socket.emit('oldimgme', limage.content)
 
-                            } else {
-                                socket.emit('oldimgautre', limage.content)
+                    //         } else {
+                    //             socket.emit('oldimgautre', limage.content)
 
-                            }
-                        })
-                    }
+                    //         }
+                    //     })
+                    // }
 
                 });
             }
 
 
-        }).sort({createdAt: 'asc'})
+        })
 
 
 
@@ -713,4 +760,8 @@ io.on('connection', (socket) => {
 
 
 
-server.listen(9999, () => console.log('server ok ! : http://192.168.1.13:9999'));
+
+
+server.listen(9999, (req, res)=>{
+    console.log("server ok ! : https://192.168.1.13:9999");
+})

@@ -1,4 +1,4 @@
-let socket = io.connect('http://192.168.1.13:9999');
+let socket = io.connect('https://192.168.1.13:9999', {secure: true});
 
 
 
@@ -96,16 +96,39 @@ socket.on('messageView', (data) => {
 
 socket.on('oldMessagesMe', (message) => {
 
-         createElementFunction('oldMessagesMe', message)
-        // console.log(message);
+      
+            createElementFunction('oldMessagesMe', message)
+       
+            // socket.emit('searchImage', message.img)
+      
+       
 
 })
 
 socket.on('oldMessages', (message) => {
 
-         createElementFunction('oldMessages', message)
-        // console.log(message);
+      
 
+       
+            createElementFunction('oldMessages', message)
+      
+            
+       
+
+})
+
+socket.on('afficheImage', (photo)=>{
+    
+    console.log(photo.name);
+    let div = document.getElementById(photo.name)
+    div.textContent=''
+    let img = document.createElement('img')
+    img.src = photo.src
+    img.classList.add('img')
+    div.appendChild(img)
+
+   
+   
 })
 
 socket.on('oldimgautre', (src)=>{
@@ -142,7 +165,7 @@ function notWritting() {
 
 function createElementFunction(element, content) {
     let newElement = document.createElement('div');
-    let messagemoi = document.createElement('p');
+    let messagemoi = document.createElement('div');
     let info = document.createElement('div')
 
     switch (element) {
@@ -181,8 +204,16 @@ function createElementFunction(element, content) {
             messagemoi.textContent = content.sender + ' : ' + content.content;
             newElement.appendChild(messagemoi)
 
+            if(content.img){
+                messagemoi.id= content.img
+                socket.emit('searchImage', content.img)
+            }
+
+
             info.textContent = content.date
             info.classList.add('infoautre')
+            // console.log(content.img);
+
 
             newElement.appendChild(info)
 
@@ -203,11 +234,18 @@ function createElementFunction(element, content) {
 
             document.getElementById('msgcontent').appendChild(newElement);
             messagemoi.classList.add('messagemoi');
+            if(content.img){
+                messagemoi.id= content.img
+                socket.emit('searchImage', content.img)
+            }
             messagemoi.textContent = content.content;
             newElement.appendChild(messagemoi)
 
+            
+
             info.textContent = content.date
             info.classList.add('infomoi')
+            // console.log(content.img);
 
             newElement.appendChild(info)
 
@@ -347,8 +385,26 @@ function handleFiles(files) {
 
                 return function (e) {
                     let src = e.target.result;
-                    socket.emit('testimg', src)
+                    // socket.emit('testimg', src)
+                    // monupload(src)
                     aImg.src = e.target.result;
+
+                    let obj = {
+                        name : 'test',
+                        url: src
+                    }
+
+                    fetch('https://192.168.1.13:5555/',{
+                        method: "POST",
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type':'application/json'
+                        },
+                        body: JSON.stringify(obj)
+                    },(err)=>{
+                        console.log(err)
+                        console.log('ya quoi');;
+                    })
 
                 };
             })(img);
@@ -361,6 +417,11 @@ function handleFiles(files) {
 
     }
 
+}
+
+function monupload(files){
+    socket.emit("upload", files)
+     
 }
 
 
