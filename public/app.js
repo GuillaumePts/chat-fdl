@@ -1,4 +1,6 @@
-let socket = io.connect('https://192.168.1.13:9999', {secure: true});
+let socket = io.connect('https://192.168.1.13:9999', {
+    secure: true
+});
 
 
 
@@ -96,52 +98,52 @@ socket.on('messageView', (data) => {
 
 socket.on('oldMessagesMe', (message) => {
 
-      
-            createElementFunction('oldMessagesMe', message)
-       
-            // socket.emit('searchImage', message.img)
-      
-       
+
+    createElementFunction('oldMessagesMe', message)
+
+    // socket.emit('searchImage', message.img)
+
+
 
 })
 
 socket.on('oldMessages', (message) => {
 
-      
 
-       
-            createElementFunction('oldMessages', message)
-      
-            
-       
+
+
+    createElementFunction('oldMessages', message)
+
+
+
 
 })
 
-socket.on('afficheImage', (photo)=>{
-    
+socket.on('afficheImage', (photo) => {
+
     console.log(photo.name);
     let div = document.getElementById(photo.name)
-    div.textContent=''
+    div.textContent = ''
     let img = document.createElement('img')
     img.src = photo.src
     img.classList.add('img')
     div.appendChild(img)
 
-   
-   
+
+
 })
 
-socket.on('oldimgautre', (src)=>{
+socket.on('oldimgautre', (src) => {
     createElementFunction('oldimgautre', src)
 })
 
-socket.on('oldimgme', (src)=>{
-createElementFunction('oldimgme',src)
+socket.on('oldimgme', (src) => {
+    createElementFunction('oldimgme', src)
 })
 
 socket.on('imageview', (src) => {
-    
-     createElementFunction('imageautre', src)
+
+    createElementFunction('imageautre', src)
 
 })
 
@@ -204,8 +206,8 @@ function createElementFunction(element, content) {
             messagemoi.textContent = content.sender + ' : ' + content.content;
             newElement.appendChild(messagemoi)
 
-            if(content.img){
-                messagemoi.id= content.img
+            if (content.img) {
+                messagemoi.id = content.img
                 socket.emit('searchImage', content.img)
             }
 
@@ -234,14 +236,14 @@ function createElementFunction(element, content) {
 
             document.getElementById('msgcontent').appendChild(newElement);
             messagemoi.classList.add('messagemoi');
-            if(content.img){
-                messagemoi.id= content.img
+            if (content.img) {
+                messagemoi.id = content.img
                 socket.emit('searchImage', content.img)
             }
             messagemoi.textContent = content.content;
             newElement.appendChild(messagemoi)
 
-            
+
 
             info.textContent = content.date
             info.classList.add('infomoi')
@@ -283,22 +285,22 @@ function createElementFunction(element, content) {
         case 'oldimgautre':
             newElement.classList.add('autre', 'message');
             document.getElementById('msgcontent').appendChild(newElement);
-            
-           
-           
 
 
-                let oldimgautre = document.createElement('img')
-                oldimgautre.classList.add('img')
-                oldimgautre.src = content
 
-                newElement.appendChild(oldimgautre)
 
-                oldimgautre.addEventListener('click', () => {
-                    voirImage(oldimgautre.src)
 
-                })
-           
+            let oldimgautre = document.createElement('img')
+            oldimgautre.classList.add('img')
+            oldimgautre.src = content
+
+            newElement.appendChild(oldimgautre)
+
+            oldimgautre.addEventListener('click', () => {
+                voirImage(oldimgautre.src)
+
+            })
+
 
 
 
@@ -311,20 +313,20 @@ function createElementFunction(element, content) {
             newElement.classList.add('moi', 'message');
             document.getElementById('msgcontent').appendChild(newElement);
 
-          
 
 
-                let oldimgme = document.createElement('img')
-                oldimgme.classList.add('img')
-                oldimgme.src = content
 
-                newElement.appendChild(oldimgme)
+            let oldimgme = document.createElement('img')
+            oldimgme.classList.add('img')
+            oldimgme.src = content
 
-                oldimgme.addEventListener('click', () => {
-                    voirImage(oldimgme.src)
+            newElement.appendChild(oldimgme)
 
-                })
-            
+            oldimgme.addEventListener('click', () => {
+                voirImage(oldimgme.src)
+
+            })
+
             leScroll()
 
             break;
@@ -377,7 +379,7 @@ function handleFiles(files) {
 
 
             img.file = file;
-        
+
 
             let reader = new FileReader();
 
@@ -389,22 +391,62 @@ function handleFiles(files) {
                     // monupload(src)
                     aImg.src = e.target.result;
 
-                    let obj = {
-                        name : 'test',
-                        url: src
+                    const obj = {
+                        name : 'sara'
                     }
+                        
+                    
 
-                    fetch('https://192.168.1.13:5555/',{
-                        method: "POST",
+                    // let test = JSON.stringify(obj);
+                    // console.log(obj);
+                    // console.log(test);
+
+                    // fetch('https://192.168.1.13:5555/').then(res => res.json()).then((contenu) => {
+                    //     console.log(contenu);
+                    // })
+
+    
+
+                    // fetch('https://192.168.1.13:5555/',{
+                    //     method: 'POST',
+                    //     body:  JSON.stringify({
+                    //         user: {
+                    //             name: "John",
+                    //             email: "john@example.com"
+                    //         }
+                    //     }),
+                        
+                     
+                    // }).then(res => res.json()).then(res => console.log(res))
+
+                    const url = 'https://192.168.1.13:5555/'
+
+                    let data = JSON.stringify(obj)
+                        
+
+                    let request =  new Request(url, {
+                        method: 'POST',
+                        body: data,
+                        
+                        
                         headers: {
-                            'Accept': 'application/json',
-                            'Content-Type':'application/json'
+                            'Accept' :  'application/json',
+                            'Content-Type' : 'application/json'
+                            
                         },
-                        body: JSON.stringify(obj)
-                    },(err)=>{
-                        console.log(err)
-                        console.log('ya quoi');;
+                       
                     })
+
+                    fetch(request)
+                    .then(res => res.json())
+                    .then(data => console.log(data))
+
+                    
+                    
+
+
+                    
+
 
                 };
             })(img);
@@ -419,9 +461,9 @@ function handleFiles(files) {
 
 }
 
-function monupload(files){
-    socket.emit("upload", files)
-     
+function monupload(files) {
+    // socket.emit("upload", files)
+
 }
 
 

@@ -42,6 +42,12 @@ let Image = mongoose.model('image');
 app.use(express.static(__dirname + '/public'));
 
 
+app.use(function (req,res,next){
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    next()
+})
+
+
 app.get('/', function (req, res) {
     User.find((err, users) => {
         if (users) {
