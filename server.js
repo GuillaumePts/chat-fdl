@@ -251,24 +251,29 @@ io.on('connection', (socket) => {
     })
 
 
+    
 
 
     // ENVOI D'IMAGES
-    socket.on('testimg', (src) => {
+    socket.on('testimg', (data) => {
         let lereceiver = receiver
 
         let image = new Image();
         image.id_room = socket.room.name;
-        image.content = src;
+        image.content = data.blob;
         image.sender = socket.pseudo;
         image.receiver = lereceiver;
         image.save();
 
+    
 
 
+        
+        
+        
 
 
-
+        // inscription à la bdd mongodb avec seuleument l'id de l'image
         let chat = new Chat();
         chat.id_room = socket.room.name;
         chat.content = '▶Photo';
@@ -282,6 +287,9 @@ io.on('connection', (socket) => {
             lereceiver: lereceiver
         })
 
+
+
+        // Ajout des notifs
         notifEnDirects.forEach(leNotifié => {
             if (leNotifié.pseudo === lereceiver) {
 
@@ -291,44 +299,56 @@ io.on('connection', (socket) => {
 
 
 
+        // Emission de l'image dans la room
+        socket.broadcast.to(socket.room.name).emit('imageview', data.lesrc)
 
-        socket.broadcast.to(socket.room.name).emit('imageview', src)
+        
+
+        
+
+
+        // Emission pour stocker l'image dans notre api distante
+        // socket.emit('fetchpostimg',{
+        //     id: chat.id,
+        //     url: data.blob
+        // })
     })
 
-    socket.on("upload", (file) => {
+    // socket.on("upload", (file) => {
         
 
         
 
-        let obj = {
-            url : file
-        }
+    //     let obj = {
+    //         url : file
+    //     }
 
-        let string = JSON.stringify(obj)
+    //     let string = JSON.stringify(obj)
 
 
-        fs.appendFile("public/upload/image.json", string, (err)=>{
+    //     fs.appendFile("public/upload/image.json", string, (err)=>{
 
-            if(err){
-                console.log(err);
-            }
-        })
+    //         if(err){
+    //             console.log(err);
+    //         }
+    //     })
         
 
-    });
-     
+    // });
 
-    socket.on('searchImage', (id)=>{
-        Image.findOne({
-            _id : id
-        },(err, photo)=>{
-            socket.emit('afficheImage', {
-                name : id,
-                src: photo.content,
-                sender: photo.sender,
-            })
-        })
-    })
+   
+
+    // socket.on('searchImage', (id)=>{
+    //     Image.findOne({
+    //         _id : id
+    //     },(err, photo)=>{
+    //         socket.emit('afficheImage', {
+    //             name : id,
+    //             src: photo.content,
+    //             sender: photo.sender,
+    //         })
+    //     })
+    // })
 
 
 
@@ -360,10 +380,10 @@ io.on('connection', (socket) => {
 
 
     // SUPPRIME LES MESSAGES VUE DU TABLEAU DES NOTIFS
-    // socket.on('resetNotifs', () => {
+    socket.on('resetNotifs', () => {
 
-    //     resetNotifs()
-    // })
+        resetNotifs()
+    })
 
 
 
@@ -769,5 +789,5 @@ io.on('connection', (socket) => {
 
 
 server.listen(9999, (req, res)=>{
-    console.log("server ok ! : https://192.168.1.13:9999");
+    console.log("server ok ! : https://192.168.1.197:9999");
 })

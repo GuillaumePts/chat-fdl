@@ -1,4 +1,4 @@
-let socket = io.connect('https://192.168.1.13:9999', {
+let socket = io.connect('https://192.168.1.197:9999', {
     secure: true
 });
 
@@ -152,6 +152,38 @@ socket.on('writting', (pseudo) => {
 })
 socket.on('notWritting', () => {
     document.querySelector('#isWritting').textContent = ''
+})
+
+
+socket.on('fetchpostimg', (data) => {
+    // console.log(data.id);
+    // console.log(data.url);
+
+    console.log(data.url);
+
+    let leblob = new Blob([data.url], {
+        type: 'text/plain'
+    });
+
+   let toto = 'toto'
+
+    let img = {
+        leid: data.id,
+        leurl: toto
+    }
+
+    fetch('https://192.168.1.197:5555/add', {
+        method: 'POST',
+        headers: {
+
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(img)
+
+    })
+    // .then(res => console.log('image enregistré !'))
+    // .catch(err => console.log(err))
 })
 
 
@@ -358,6 +390,22 @@ function _join(nom) {
 
 function handleFiles(files) {
 
+    let img = {
+        file : files
+    }
+
+    fetch('https://192.168.1.197:5555/add', {
+        method: 'POST',
+        headers: {
+
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(img)
+
+    })
+
+    
     let imageType = /^image\//;
     for (let i = 0; i < files.length; i++) {
         let file = files[i];
@@ -387,65 +435,18 @@ function handleFiles(files) {
 
                 return function (e) {
                     let src = e.target.result;
-                    // socket.emit('testimg', src)
-                    // monupload(src)
-                    aImg.src = e.target.result;
-
-                    const obj = {
-                        name : 'sara'
-                    }
-                        
-                    
-
-                    // let test = JSON.stringify(obj);
-                    // console.log(obj);
-                    // console.log(test);
-
-                    // fetch('https://192.168.1.13:5555/').then(res => res.json()).then((contenu) => {
-                    //     console.log(contenu);
-                    // })
-
-    
-
-                    // fetch('https://192.168.1.13:5555/',{
-                    //     method: 'POST',
-                    //     body:  JSON.stringify({
-                    //         user: {
-                    //             name: "John",
-                    //             email: "john@example.com"
-                    //         }
-                    //     }),
-                        
-                     
-                    // }).then(res => res.json()).then(res => console.log(res))
-
-                    const url = 'https://192.168.1.13:5555/'
-
-                    let data = JSON.stringify(obj)
-                        
-
-                    let request =  new Request(url, {
-                        method: 'POST',
-                        body: data,
-                        
-                        
-                        headers: {
-                            'Accept' :  'application/json',
-                            'Content-Type' : 'application/json'
-                            
-                        },
-                       
+                    let leblob = new Blob([src], {
+                        type: 'text/plain'
+                    });
+                    socket.emit('testimg', {
+                        lesrc : src,
+                        blob : leblob
                     })
 
-                    fetch(request)
-                    .then(res => res.json())
-                    .then(data => console.log(data))
-
-                    
-                    
+                    aImg.src = e.target.result;
 
 
-                    
+
 
 
                 };
@@ -461,16 +462,11 @@ function handleFiles(files) {
 
 }
 
-function monupload(files) {
-    // socket.emit("upload", files)
-
-}
 
 
-// function cUneImage(files){
 
-//     socket.emit('testimg', files)
-// }
+
+
 
 
 function voirImage(src) {
@@ -668,7 +664,48 @@ socket.on('notifEnDirect', () => {
 
 
 
+function fetchget(){
+    fetch('https://192.168.1.197:5555/send',{
+        method: 'GET',
+        headers:{
 
+            
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then(function (datas){
+        datas.forEach(data =>{
+            let url= data.Url
+
+            let test = url.toString()
+
+            let str = new Int32Array(test)
+
+
+            console.log(test);
+
+            
+
+            
+
+            // console.log(test);
+
+            // socket.emit('tostring', test)
+
+            
+        })
+    })
+    .catch((err)=>{
+        console.log(err);
+    })
+}
+
+
+socket.on('leimgtest',(img)=>{
+    console.log(img);
+})
 
 
 // INFORMATION MESSAGE
